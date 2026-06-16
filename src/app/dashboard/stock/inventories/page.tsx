@@ -135,7 +135,7 @@ async function buildInventoryPdf(session: InventorySession, lines: InventoryLine
   // Logo
   let logoDataUrl: string | null = null;
   try {
-    const res = await fetch("/EMMlogo.png");
+    const res = await fetch("/logo.png");
     const blob = await res.blob();
     logoDataUrl = await new Promise<string>((resolve) => {
       const reader = new FileReader();
