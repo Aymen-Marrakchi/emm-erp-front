@@ -221,6 +221,7 @@ export interface CompanySettings {
   iban: string;
   bank: string;
   agence: string;
+  invoicePrefix?: string;
 }
 
 export interface SalesReportMonth {

@@ -12,6 +12,7 @@ const labelClass = "mb-1.5 block text-xs font-semibold uppercase tracking-[0.14e
 
 const empty: CompanySettings = {
   companyName: "", mf: "", rne: "", address: "", phone: "", email: "", rib: "", iban: "", bank: "", agence: "",
+  invoicePrefix: "FC",
 };
 
 export default function FinanceSettingsPage() {
@@ -91,6 +92,24 @@ export default function FinanceSettingsPage() {
                 {field("mf", t("fin_mf"), "0000000A/B/M/000")}
                 {field("rne", t("fin_rne"), "00000000")}
               </div>
+            </div>
+
+            <div className={`${surface} p-6 space-y-5`}>
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Numérotation des factures</p>
+              <div className="grid grid-cols-2 gap-4">
+                {field("invoicePrefix", "Préfixe facture", "FC")}
+                <div>
+                  <label className={labelClass}>Aperçu du numéro</label>
+                  <div className={`${inputClass} flex items-center text-slate-500 dark:text-slate-400`}>
+                    {`${(form.invoicePrefix || "FC").toUpperCase().replace(/[^A-Z0-9]/g, "") || "FC"}-0001/${
+                      String(new Date().getDate()).padStart(2, "0")
+                    }${String(new Date().getMonth() + 1).padStart(2, "0")}${new Date().getFullYear()}`}
+                  </div>
+                </div>
+              </div>
+              <p className="text-[11px] text-slate-400 dark:text-slate-500">
+                Modifie uniquement le préfixe des nouvelles factures (ex. « FC »). Les factures déjà créées ne changent pas.
+              </p>
             </div>
 
             <div className={`${surface} p-6 space-y-5`}>
