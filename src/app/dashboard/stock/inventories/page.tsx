@@ -146,16 +146,16 @@ async function buildInventoryPdf(session: InventorySession, lines: InventoryLine
   if (logoDataUrl) doc.addImage(logoDataUrl, "PNG", MARGIN, 8, 28, 18);
 
   // Company / Title
-  doc.setFontSize(8).setFont("helvetica", "normal").setTextColor(100, 116, 139);
+  doc.setFontSize(8).setFont("helvetica", "normal").setTextColor(0, 0, 0);
   doc.text("Route de Gabès Km 6, Sfax, Tunisie", MARGIN, 30);
   doc.text("Tél : +(216) 98 241 790  ·  info@emmtn.com", MARGIN, 34);
 
-  doc.setFontSize(20).setFont("helvetica", "bold").setTextColor(15, 23, 42);
+  doc.setFontSize(20).setFont("helvetica", "bold").setTextColor(0, 0, 0);
   doc.text("RAPPORT D'INVENTAIRE", W - MARGIN, 14, { align: "right" });
-  doc.setFontSize(11).setFont("helvetica", "normal").setTextColor(51, 65, 85);
+  doc.setFontSize(11).setFont("helvetica", "normal").setTextColor(0, 0, 0);
   doc.text(session.code, W - MARGIN, 21, { align: "right" });
 
-  doc.setFontSize(8).setTextColor(100, 116, 139);
+  doc.setFontSize(8).setTextColor(0, 0, 0);
   doc.text(`Type : ${session.type}`, W - MARGIN, 27, { align: "right" });
   doc.text(`Dépôt : ${session.depotId?.name || "—"}`, W - MARGIN, 32, { align: "right" });
   doc.text(`Clôturé le : ${session.closedAt ? new Date(session.closedAt).toLocaleDateString("fr-FR") : "—"}`, W - MARGIN, 37, { align: "right" });
@@ -168,10 +168,10 @@ async function buildInventoryPdf(session: InventorySession, lines: InventoryLine
   doc.setFillColor(248, 250, 252).setDrawColor(226, 232, 240);
   doc.roundedRect(MARGIN, boxY, W - MARGIN * 2, boxH, 2, 2, "FD");
 
-  doc.setFontSize(7).setFont("helvetica", "bold").setTextColor(100, 116, 139);
+  doc.setFontSize(7).setFont("helvetica", "bold").setTextColor(0, 0, 0);
   doc.text("INFORMATIONS DE LA SESSION", MARGIN + 3, boxY + 5);
 
-  doc.setFontSize(9).setFont("helvetica", "normal").setTextColor(15, 23, 42);
+  doc.setFontSize(9).setFont("helvetica", "normal").setTextColor(0, 0, 0);
   doc.text(`Démarré par : ${session.startedBy?.name || "—"}`, MARGIN + 3, boxY + 11);
   doc.text(`Approuvé par : ${session.approvedBy?.name || "—"}`, MARGIN + 3, boxY + 17);
   doc.text(`Statut : ${session.status}`, W / 2 + 3, boxY + 11);
@@ -222,9 +222,9 @@ async function buildInventoryPdf(session: InventorySession, lines: InventoryLine
   const sumX = W - MARGIN - 78;
   doc.setFillColor(248, 250, 252).setDrawColor(226, 232, 240);
   doc.roundedRect(sumX, afterTable, 78, 32, 2, 2, "FD");
-  doc.setFontSize(7).setFont("helvetica", "bold").setTextColor(100, 116, 139);
+  doc.setFontSize(7).setFont("helvetica", "bold").setTextColor(0, 0, 0);
   doc.text("RÉSUMÉ", sumX + 3, afterTable + 5);
-  doc.setFontSize(8.5).setFont("helvetica", "normal").setTextColor(15, 23, 42);
+  doc.setFontSize(8.5).setFont("helvetica", "normal").setTextColor(0, 0, 0);
   doc.text(`Total système : ${totals.sys}`, sumX + 3, afterTable + 11);
   doc.text(`Total compté : ${totals.cnt}`, sumX + 3, afterTable + 17);
   doc.setTextColor(22, 163, 74);
@@ -235,7 +235,7 @@ async function buildInventoryPdf(session: InventorySession, lines: InventoryLine
   // Footer
   doc.setDrawColor(226, 232, 240).setLineWidth(0.2);
   doc.line(MARGIN, PAGE_H - 10, W - MARGIN, PAGE_H - 10);
-  doc.setFontSize(7).setFont("helvetica", "normal").setTextColor(148, 163, 184);
+  doc.setFontSize(7).setFont("helvetica", "normal").setTextColor(0, 0, 0);
   doc.text("EMM TN · Route de Gabès Km 6, Sfax · +(216) 98 241 790 · info@emmtn.com",
     W / 2, PAGE_H - 6, { align: "center" });
 
@@ -305,15 +305,17 @@ export default function StockInventoriesPage() {
     if (!user) return;
     try {
       setLoading(true); setError("");
-      const [sess, ...rest] = await Promise.all([
-        stockInventoryService.getAll(),
-        ...(canCreate ? [stockDepotService.getAll(), stockProductService.getAll()] : []),
-      ]);
-      setSessions(sess);
-      if (canCreate) {
-        setDepots(rest[0]);
-        setProducts((rest[1] as Product[]).filter((p) => p.status === "ACTIVE"));
-      }
+      const [sess, depotList, productList] = await Promise.all([
+  stockInventoryService.getAll(),
+  canCreate ? stockDepotService.getAll() : Promise.resolve([] as Depot[]),
+  canCreate ? stockProductService.getAll() : Promise.resolve([] as Product[]),
+]);
+
+setSessions(sess);
+if (canCreate) {
+  setDepots(depotList);
+  setProducts((productList as Product[]).filter((p) => p.status === "ACTIVE"));
+}
     } catch (e: any) {
       setError(e?.response?.data?.message || "Failed to load inventories.");
     } finally {

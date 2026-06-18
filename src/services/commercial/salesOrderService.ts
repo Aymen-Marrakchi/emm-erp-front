@@ -96,8 +96,25 @@ export interface SalesOrderOrdonnanceLinePayload {
   allocations: SalesOrderAllocationEntryPayload[];
 }
 
+export interface PaginatedOrders {
+  items: SalesOrder[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  kpis: { total: number; draft: number; confirmed: number; prepared: number; late: number };
+}
+
 export const salesOrderService = {
   getAll: async () => (await api.get("/commercial/orders")).data,
+
+  getPaginated: async (params: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    status?: string;
+  }): Promise<PaginatedOrders> =>
+    (await api.get("/commercial/orders/paginated", { params })).data,
 
   getById: async (id: string) =>
     (await api.get(`/commercial/orders/${id}`)).data,

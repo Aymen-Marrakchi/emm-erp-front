@@ -185,7 +185,7 @@ export async function exportBrandedPdf(
   // Centered subtitle
   doc.setFontSize(8);
   doc.setFont("helvetica", "normal");
-  doc.setTextColor(110, 116, 124);
+  doc.setTextColor(0, 0, 0);
   doc.text(`${subtitle.toUpperCase()}  ·  GENERATED ${todayStr()}`, pageW / 2, 23, { align: "center" });
 
   // Red accent line under the header
@@ -221,7 +221,7 @@ export async function exportBrandedPdf(
   const finalY = (doc as any).lastAutoTable?.finalY ?? 140;
   doc.setFontSize(7);
   doc.setFont("helvetica", "normal");
-  doc.setTextColor(120, 120, 120);
+  doc.setTextColor(0, 0, 0);
   doc.text(`Confidential — EMM Hardware ERP · ${new Date().toISOString()}`, pageW / 2, finalY + 10, {
     align: "center",
   });

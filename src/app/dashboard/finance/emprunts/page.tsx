@@ -4,6 +4,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import {
   empruntService,
   type Emprunt,
+  type EmpruntPayment, 
   type EmpruntPaymentMethod,
 } from "@/services/finance/empruntService";
 import { useEffect, useMemo, useState } from "react";
@@ -443,7 +444,7 @@ export default function FinanceEmpruntsPage() {
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                              {e.payments.map((p) => (
+                              {e.payments.map((p: EmpruntPayment) => (
                                 <tr key={p._id} className="bg-white dark:bg-slate-900">
                                   <td className="px-4 py-2 text-slate-700 dark:text-slate-200">{fmtDate(p.paidAt)}</td>
                                   <td className="px-4 py-2 text-slate-600 dark:text-slate-300">{METHOD_LABELS[p.method]}</td>

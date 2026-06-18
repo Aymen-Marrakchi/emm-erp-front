@@ -122,25 +122,25 @@ function openInvoiceDocument(invoice: CustomerInvoice, settings: CompanySettings
   const totalNetHT  = invoice.subtotalHt ?? r(totalBrutHT - totalRemise);
   const timbre      = invoice.timbreFiscal ?? 1;
 
-  const MIN_ROWS = 16;
+  const MIN_ROWS = 10;
   const dataRows = processedLines.map(({ line, qty, unitPrice, disc, montantHT }, idx) => `
     <tr style="background:${idx % 2 === 0 ? "#fff" : "#f8fafc"}">
-      <td style="padding:7px 10px;font-size:11px;color:#64748b;border-right:1px solid #e2e8f0">${line.productId?.sku || "—"}</td>
-      <td style="padding:7px 10px;font-size:12px;border-right:1px solid #e2e8f0">${line.productId?.name || "—"}</td>
-      <td style="padding:7px 10px;text-align:center;font-size:12px;font-weight:600;border-right:1px solid #e2e8f0">${qty}</td>
-      <td style="padding:7px 10px;text-align:right;font-size:12px;border-right:1px solid #e2e8f0">${unitPrice.toFixed(3)}</td>
-      <td style="padding:7px 10px;text-align:center;font-size:12px;color:#64748b;border-right:1px solid #e2e8f0">${disc > 0 ? disc + "%" : "—"}</td>
+      <td style="padding:7px 10px;font-size:11px;color:#000000;border:1px solid #000000">${line.productId?.sku || "—"}</td>
+      <td style="padding:7px 10px;font-size:12px;border:1px solid #000000">${line.productId?.name || "—"}</td>
+      <td style="padding:7px 10px;text-align:center;font-size:12px;font-weight:600;border:1px solid #000000">${qty}</td>
+      <td style="padding:7px 10px;text-align:right;font-size:12px;border:1px solid #000000">${unitPrice.toFixed(3)}</td>
+      <td style="padding:7px 10px;text-align:center;font-size:12px;color:#000000;border:1px solid #000000">${disc > 0 ? disc + "%" : "—"}</td>
       <td style="padding:7px 10px;text-align:right;font-size:12px;font-weight:600">${montantHT.toFixed(3)}</td>
     </tr>`).join("");
 
   const emptyRowsCount = Math.max(0, MIN_ROWS - processedLines.length);
   const emptyRows = Array.from({ length: emptyRowsCount }).map((_, idx) => `
     <tr style="height:28px;background:${(processedLines.length + idx) % 2 === 0 ? "#fff" : "#f8fafc"}">
-      <td style="border-right:1px solid #e2e8f0"></td>
-      <td style="border-right:1px solid #e2e8f0"></td>
-      <td style="border-right:1px solid #e2e8f0"></td>
-      <td style="border-right:1px solid #e2e8f0"></td>
-      <td style="border-right:1px solid #e2e8f0"></td>
+      <td style="border:1px solid #000000"></td>
+      <td style="border:1px solid #000000"></td>
+      <td style="border:1px solid #000000"></td>
+      <td style="border:1px solid #000000"></td>
+      <td style="border:1px solid #000000"></td>
       <td></td>
     </tr>`).join("");
 
@@ -159,11 +159,11 @@ function openInvoiceDocument(invoice: CustomerInvoice, settings: CompanySettings
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: Arial, sans-serif; font-size: 13px; color: #0f172a; background: #fff; }
-    @page { size: A4; margin: 18mm 15mm; }
+    @page { size: A4; margin: 12mm 14mm; }
     @media print { body { padding: 0; } }
-    .page { max-width: 794px; margin: 0 auto; padding: 24px 28px; display:flex; flex-direction:column; min-height:261mm; }
+    .page { max-width: 794px; margin: 0 auto; padding: 0; display:flex; flex-direction:column; min-height:255mm; }
     table { border-collapse: collapse; width: 100%; }
-    th { font-weight: 600; }
+    th { font-weight: 600; border: 1px solid #000000; }
   </style>
 </head>
 <body>
@@ -175,34 +175,34 @@ function openInvoiceDocument(invoice: CustomerInvoice, settings: CompanySettings
       <td style="vertical-align:top;width:55%">
         <!-- Company block -->
         <img src="${window.location.origin}/logo.png" alt="${companyName}" style="height:60px;max-width:180px;object-fit:contain;display:block;margin-bottom:8px"/>
-        <div style="font-size:11px;color:#64748b;margin-top:3px">${companyAddress}</div>
-        <div style="font-size:11px;color:#64748b;margin-top:1px">Tél : ${companyPhone} &nbsp;·&nbsp; ${companyEmail}</div>
-        ${companyMf || companyRne ? `<div style="font-size:11px;color:#64748b;margin-top:4px">${companyMf ? `<strong>MF :</strong> ${companyMf}` : ""}${companyMf && companyRne ? " &nbsp;|&nbsp; " : ""}${companyRne ? `<strong>RNE :</strong> ${companyRne}` : ""}</div>` : ""}
-        ${companyRib ? `<div style="font-size:11px;color:#64748b;margin-top:1px"><strong>RIB :</strong> ${companyRib}${companyBank ? ` &nbsp;(${companyBank}${companyAgence ? " — " + companyAgence : ""})` : ""}</div>` : ""}
+        <div style="font-size:11px;color:#000000;margin-top:3px">${companyAddress}</div>
+        <div style="font-size:11px;color:#000000;margin-top:1px">Tél : ${companyPhone} &nbsp;·&nbsp; ${companyEmail}</div>
+        ${companyMf || companyRne ? `<div style="font-size:11px;color:#000000;margin-top:4px">${companyMf ? `<strong>MF :</strong> ${companyMf}` : ""}${companyMf && companyRne ? " &nbsp;|&nbsp; " : ""}${companyRne ? `<strong>RNE :</strong> ${companyRne}` : ""}</div>` : ""}
+        ${companyRib ? `<div style="font-size:11px;color:#000000;margin-top:1px"><strong>RIB :</strong> ${companyRib}${companyBank ? ` &nbsp;(${companyBank}${companyAgence ? " — " + companyAgence : ""})` : ""}</div>` : ""}
       </td>
       <td style="vertical-align:top;text-align:right;width:45%">
         <!-- Invoice identity -->
         <div style="font-size:26px;font-weight:700;letter-spacing:-1px;color:#0f172a">FACTURE</div>
-        <div style="font-size:15px;font-weight:600;color:#334155;margin-top:2px">${invoice.invoiceNo}</div>
+        <div style="font-size:15px;font-weight:600;color:#000000;margin-top:2px">${invoice.invoiceNo}</div>
         <table style="margin-top:10px;margin-left:auto;width:auto">
           <tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Date :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Date :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0">${issueDate}</td>
           </tr>
           <tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Échéance :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Échéance :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0">${dueDate}</td>
           </tr>
           <tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Règlement :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Règlement :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0">${PAYMENT_METHOD_LABELS[invoice.paymentMethod] || "—"}</td>
           </tr>
           <tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Statut :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Statut :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0;color:${invoice.paymentStatus === "PAYEE" ? "#16a34a" : "#0f172a"}">${PAYMENT_STATUS_LABELS[invoice.paymentStatus] || invoice.paymentStatus}</td>
           </tr>
           <tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Commande :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Commande :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0">${order?.orderNo || "—"}</td>
           </tr>
         </table>
@@ -213,11 +213,11 @@ function openInvoiceDocument(invoice: CustomerInvoice, settings: CompanySettings
   ${isSupplier ? `<!-- ═══ TEJ BAND ═══ -->
   <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:8px 14px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between">
     <div>
-      <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#64748b;font-weight:600">Plateforme TEJ — DGI e-Facturation</div>
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#000000;font-weight:600">Plateforme TEJ — DGI e-Facturation</div>
       <div style="font-size:13px;font-weight:700;margin-top:3px;color:#0f172a">${invoice.tejReference || "NON SOUMIS"}</div>
       <div style="font-size:10px;margin-top:2px;color:${tejColor};font-weight:600">${tejStatusLabel}</div>
     </div>
-    <div style="font-size:9px;color:#94a3b8;text-align:right">
+    <div style="font-size:9px;color:#000000;text-align:right">
       ${isTejValidated ? `<span style="color:#16a34a;font-size:10px;font-weight:700">✓ Validé DGI</span><br/>` : ""}
       Document fiscal électronique<br/>conforme à la loi n°2024-x
     </div>
@@ -227,34 +227,34 @@ function openInvoiceDocument(invoice: CustomerInvoice, settings: CompanySettings
   <table style="margin-bottom:16px">
     <tr>
       <td style="width:48%;vertical-align:top;border:1px solid #e2e8f0;border-radius:6px;padding:10px 14px">
-        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#64748b;font-weight:600;margin-bottom:6px">Vendeur</div>
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#000000;font-weight:600;margin-bottom:6px">Vendeur</div>
         <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px">
           <img src="${window.location.origin}/logo.png" alt="${companyName}" style="height:22px;object-fit:contain"/>
           ${companyName}
         </div>
-        <div style="font-size:11px;color:#64748b;margin-top:3px">${companyAddress}</div>
-        ${companyMf ? `<div style="font-size:11px;color:#64748b;margin-top:1px">MF : ${companyMf}</div>` : ""}
+        <div style="font-size:11px;color:#000000;margin-top:3px">${companyAddress}</div>
+        ${companyMf ? `<div style="font-size:11px;color:#000000;margin-top:1px">MF : ${companyMf}</div>` : ""}
       </td>
       <td style="width:4%"></td>
       <td style="width:48%;vertical-align:top;border:1px solid #e2e8f0;border-radius:6px;padding:10px 14px">
-        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#64748b;font-weight:600;margin-bottom:6px">Client / Destinataire</div>
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#000000;font-weight:600;margin-bottom:6px">Client / Destinataire</div>
         <div style="font-size:13px;font-weight:700">${invoice.customerName}</div>
-        ${invoice.customerMf ? `<div style="font-size:11px;color:#64748b;margin-top:3px">MF : ${invoice.customerMf}</div>` : ""}
-        ${invoice.customerAddress ? `<div style="font-size:11px;color:#64748b;margin-top:1px">Adresse : ${invoice.customerAddress}</div>` : ""}
+        ${invoice.customerMf ? `<div style="font-size:11px;color:#000000;margin-top:3px">MF : ${invoice.customerMf}</div>` : ""}
+        ${invoice.customerAddress ? `<div style="font-size:11px;color:#000000;margin-top:1px">Adresse : ${invoice.customerAddress}</div>` : ""}
       </td>
     </tr>
   </table>
 
   <!-- PRODUCT TABLE -->
-  <table style="border:1px solid #e2e8f0;border-radius:6px;overflow:hidden;margin-bottom:0;border-collapse:collapse">
+  <table style="border:1px solid #000000;border-radius:6px;overflow:hidden;margin-bottom:0;border-collapse:collapse">
     <thead>
-      <tr style="background:#0f172a;color:#fff">
-        <th style="padding:9px 10px;text-align:left;font-size:11px;width:90px;border-right:1px solid rgba(255,255,255,0.15)">Référence</th>
-        <th style="padding:9px 10px;text-align:left;font-size:11px;border-right:1px solid rgba(255,255,255,0.15)">Désignation</th>
-        <th style="padding:9px 10px;text-align:center;font-size:11px;width:50px;border-right:1px solid rgba(255,255,255,0.15)">Qté</th>
-        <th style="padding:9px 10px;text-align:right;font-size:11px;width:90px;border-right:1px solid rgba(255,255,255,0.15)">Prix HT (TND)</th>
-        <th style="padding:9px 10px;text-align:center;font-size:11px;width:60px;border-right:1px solid rgba(255,255,255,0.15)">Remise</th>
-        <th style="padding:9px 10px;text-align:right;font-size:11px;width:100px">Montant HT (TND)</th>
+      <tr style="background:#ffffff;color:#000000">
+        <th style="padding:9px 10px;text-align:left;font-size:11px;width:90px;border:1px solid #000000">Référence</th>
+        <th style="padding:9px 10px;text-align:left;font-size:11px;border:1px solid #000000">Désignation</th>
+        <th style="padding:9px 10px;text-align:center;font-size:11px;width:50px;border:1px solid #000000">Qté</th>
+        <th style="padding:9px 10px;text-align:right;font-size:11px;width:90px;border:1px solid #000000">Prix HT (TND)</th>
+        <th style="padding:9px 10px;text-align:center;font-size:11px;width:60px;border:1px solid #000000">Remise</th>
+        <th style="padding:9px 10px;text-align:right;font-size:11px;width:100px;border:1px solid #000000">Montant HT (TND)</th>
       </tr>
     </thead>
     <tbody>${rows}</tbody>
@@ -267,53 +267,53 @@ function openInvoiceDocument(invoice: CustomerInvoice, settings: CompanySettings
   <div style="display:flex;justify-content:flex-end;margin-top:16px;margin-bottom:16px">
     <table style="width:260px;border:1px solid #e2e8f0;border-radius:6px;overflow:hidden;border-collapse:collapse">
       <tr style="background:#f8fafc">
-        <td style="padding:6px 12px;font-size:12px;color:#64748b;border-bottom:1px solid #e2e8f0">Total HT</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000;border-bottom:1px solid #e2e8f0">Total HT</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px;font-weight:600;border-bottom:1px solid #e2e8f0">${totalBrutHT.toFixed(3)} TND</td>
       </tr>
       ${totalRemise > 0 ? `<tr>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b;border-bottom:1px solid #e2e8f0">Remise</td>
-        <td style="padding:6px 12px;text-align:right;font-size:12px;color:#dc2626;border-bottom:1px solid #e2e8f0">- ${totalRemise.toFixed(3)} TND</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000;border-bottom:1px solid #e2e8f0">Remise</td>
+        <td style="padding:6px 12px;text-align:right;font-size:12px;color:#000000;border-bottom:1px solid #e2e8f0">${totalRemise.toFixed(3)} TND</td>
       </tr>` : ""}
       <tr style="background:#f8fafc">
         <td style="padding:6px 12px;font-size:12px;font-weight:600;color:#0f172a;border-bottom:1px solid #e2e8f0">Total Net HT</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px;font-weight:600;border-bottom:1px solid #e2e8f0">${(totalNetHT ?? 0).toFixed(3)} TND</td>
       </tr>
       ${fodecRate > 0 ? `<tr>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b;border-bottom:1px solid #e2e8f0">FODEC (${fodecRate}%)</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000;border-bottom:1px solid #e2e8f0">FODEC (${fodecRate}%)</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px;border-bottom:1px solid #e2e8f0">${invoice.totalFodec.toFixed(3)} TND</td>
       </tr>` : ""}
       ${tvaRate > 0 ? `<tr>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b;border-bottom:1px solid #e2e8f0">TVA (${tvaRate}%)</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000;border-bottom:1px solid #e2e8f0">TVA (${tvaRate}%)</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px;border-bottom:1px solid #e2e8f0">${invoice.totalVat.toFixed(3)} TND</td>
       </tr>` : ""}
       <tr>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b;border-bottom:1px solid #e2e8f0">Timbre fiscal</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000;border-bottom:1px solid #e2e8f0">Timbre fiscal</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px;border-bottom:1px solid #e2e8f0">${timbre.toFixed(3)} TND</td>
       </tr>
-      <tr style="background:#0f172a">
-        <td style="padding:9px 12px;font-size:13px;font-weight:700;color:#fff">NET À PAYER TTC</td>
-        <td style="padding:9px 12px;text-align:right;font-size:13px;font-weight:700;color:#fff">${invoice.totalTtc.toFixed(3)} TND</td>
+      <tr style="background:#ffffff;border-top:2px solid #000000">
+        <td style="padding:9px 12px;font-size:13px;font-weight:700;color:#000000">NET À PAYER TTC</td>
+        <td style="padding:9px 12px;text-align:right;font-size:13px;font-weight:700;color:#000000">${invoice.totalTtc.toFixed(3)} TND</td>
       </tr>
     </table>
   </div>
 
   <!-- MONTANT EN LETTRES -->
   <div style="border:1px solid #e2e8f0;border-radius:6px;padding:10px 14px;margin-bottom:12px;background:#f8fafc">
-    <span style="font-size:11px;color:#64748b">Arrêté la présente facture à la somme de : </span>
+    <span style="font-size:11px;color:#000000">Arrêté la présente facture à la somme de : </span>
     <strong style="font-size:12px">${montantEnLettres(invoice.totalTtc)}</strong>
   </div>
 
   <!-- SIGNATURE -->
-  <div style="display:flex;justify-content:flex-end;margin-top:10px">
-    <div style="width:260px;text-align:center">
-      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#64748b;margin-bottom:8px">Signature</div>
-      <div style="height:52px;border:1px dashed #cbd5e1;border-radius:4px"></div>
-      <div style="font-size:9px;color:#94a3b8;margin-top:6px">Signature &amp; Cachet</div>
+  <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+    <div style="width:45%">
+      <div style="font-size:10px;color:#000000;margin-bottom:4px">Cachet &amp; Signature</div>
+      <div style="border:1px solid #000000;border-radius:6px;height:70px"></div>
+      
     </div>
   </div>
 
   <!-- FOOTER -->
-  <div style="margin-top:20px;border-top:1px solid #e2e8f0;padding-top:10px;text-align:center;font-size:9px;color:#94a3b8">
+  <div style="margin-top:20px;border-top:1px solid #e2e8f0;padding-top:10px;text-align:center;font-size:9px;color:#000000">
     ${companyName}${companyMf ? " · MF : " + companyMf : ""}${companyRne ? " · RNE : " + companyRne : ""} · ${companyAddress} · ${companyPhone} · ${companyEmail}
   </div>
 

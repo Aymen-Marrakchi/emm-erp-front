@@ -24,7 +24,9 @@ export interface CreateCyclicOrderPayload {
   notes?: string;
 }
 
-const PREFIX = "/commercial/cyclic-orders";
+// Cyclic-order routes are served by the production module
+// (registered at /api/production/cyclic-orders in the backend).
+const PREFIX = "/production/cyclic-orders";
 
 export const cyclicOrderService = {
   getAll: async (): Promise<CyclicOrder[]> => (await api.get(PREFIX)).data,

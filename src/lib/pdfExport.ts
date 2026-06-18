@@ -58,7 +58,7 @@ export async function exportToPdf(
 
   doc.setFontSize(8);
   doc.setFont("helvetica", "normal");
-  doc.setTextColor(100, 100, 100);
+  doc.setTextColor(0, 0, 0);
   doc.text(subtitle, textX, 17);
 
   const printedAt = new Date().toLocaleDateString("fr-FR", {
@@ -66,7 +66,7 @@ export async function exportToPdf(
     hour: "2-digit", minute: "2-digit",
   } as Intl.DateTimeFormatOptions);
   doc.setFontSize(7.5);
-  doc.setTextColor(100, 100, 100);
+  doc.setTextColor(0, 0, 0);
   doc.text(`Imprimé le : ${printedAt}`, PAGE_W - MARGIN, 17, { align: "right" });
 
   // Thin separator line under header
@@ -100,7 +100,7 @@ export async function exportToPdf(
     didDrawPage: (data) => {
       const pageCount = (doc as any).internal.getNumberOfPages();
       doc.setFontSize(7);
-      doc.setTextColor(120, 120, 120);
+      doc.setTextColor(0, 0, 0);
       doc.text(
         `Page ${data.pageNumber} / ${pageCount}`,
         PAGE_W / 2,
@@ -227,9 +227,6 @@ export async function printInvoiceTemplate(
   const cEmail  = co.email   || "";
   const cMf     = co.mf      || "";
   const cRne    = co.rne     || "";
-  const cRib    = co.rib     || "";
-  const cBank   = co.bank    || "";
-  const cAgence = co.agence  || "";
 
   const initials = cName
     .split(/\s+/)
@@ -264,18 +261,18 @@ export async function printInvoiceTemplate(
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10.5);
-  doc.setTextColor(20, 20, 20);
+  doc.setTextColor(0, 0, 0);
   doc.text(cName, 37, 15);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7.5);
-  doc.setTextColor(80, 80, 80);
+  doc.setTextColor(0, 0, 0);
   if (cAddr) doc.text(cAddr, 37, 21);
   const contact = [cPhone, cEmail].filter(Boolean).join("   |   ");
   if (contact) doc.text(contact, 37, 27);
 
   doc.setFontSize(6.5);
-  doc.setTextColor(140, 140, 140);
+  doc.setTextColor(0, 0, 0);
   const mfRne = [cMf ? `MF : ${cMf}` : "", cRne ? `RNE : ${cRne}` : ""]
     .filter(Boolean)
     .join("   |   ");
@@ -285,12 +282,12 @@ export async function printInvoiceTemplate(
   const docLabel = (opts.docType || "FACTURE").toUpperCase();
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7.5);
-  doc.setTextColor(160, 160, 160);
+  doc.setTextColor(0, 0, 0);
   doc.text(docLabel, W - MR, 13, { align: "right" });
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(17);
-  doc.setTextColor(15, 15, 15);
+  doc.setTextColor(0, 0, 0);
   doc.text(opts.invoiceNo, W - MR, 24, { align: "right" });
 
   // Meta grid (2 columns, right side)
@@ -307,11 +304,11 @@ export async function printInvoiceTemplate(
     const y = 33 + Math.floor(i / 2) * 9;
     doc.setFont("helvetica", "normal");
     doc.setFontSize(6.5);
-    doc.setTextColor(160, 160, 160);
+    doc.setTextColor(0, 0, 0);
     doc.text(m.label.toUpperCase(), x, y);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(7.5);
-    doc.setTextColor(30, 30, 30);
+    doc.setTextColor(0, 0, 0);
     doc.text(String(m.value), x, y + 5);
   });
 
@@ -331,7 +328,7 @@ export async function printInvoiceTemplate(
   doc.roundedRect(ML, bY, bW, bH, 2, 2, "FD");
   doc.setFont("helvetica", "normal");
   doc.setFontSize(6);
-  doc.setTextColor(160, 160, 160);
+  doc.setTextColor(0, 0, 0);
   doc.text((opts.companyRole || "VENDEUR").toUpperCase(), ML + 4, bY + 5.5);
   doc.setFillColor(59, 130, 246);
   doc.circle(ML + 8, bY + 15, 4.5, "F");
@@ -341,11 +338,11 @@ export async function printInvoiceTemplate(
   doc.text(initials, ML + 8, bY + 16.5, { align: "center" });
   doc.setFont("helvetica", "bold");
   doc.setFontSize(7.5);
-  doc.setTextColor(20, 20, 20);
+  doc.setTextColor(0, 0, 0);
   doc.text((doc.splitTextToSize(cName, bW - 18) as string[])[0], ML + 16, bY + 13);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(6.5);
-  doc.setTextColor(100, 100, 100);
+  doc.setTextColor(0, 0, 0);
   if (cAddr) doc.text(cAddr.substring(0, 38), ML + 16, bY + 18.5);
   if (cMf)   doc.text(`MF : ${cMf}`, ML + 16, bY + 23.5);
 
@@ -355,11 +352,11 @@ export async function printInvoiceTemplate(
   doc.roundedRect(cliX, bY, bW, bH, 2, 2, "FD");
   doc.setFont("helvetica", "normal");
   doc.setFontSize(6);
-  doc.setTextColor(160, 160, 160);
+  doc.setTextColor(0, 0, 0);
   doc.text(opts.party.label.toUpperCase(), cliX + 4, bY + 5.5);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(7.5);
-  doc.setTextColor(20, 20, 20);
+  doc.setTextColor(0, 0, 0);
   doc.text(
     (doc.splitTextToSize(opts.party.name, bW - 8) as string[])[0],
     cliX + 4,
@@ -367,7 +364,7 @@ export async function printInvoiceTemplate(
   );
   doc.setFont("helvetica", "normal");
   doc.setFontSize(6.5);
-  doc.setTextColor(100, 100, 100);
+  doc.setTextColor(0, 0, 0);
   let py = bY + 18.5;
   if (opts.party.mf)      { doc.text(`MF : ${opts.party.mf}`, cliX + 4, py); py += 5; }
   if (opts.party.address) doc.text(opts.party.address.substring(0, 38), cliX + 4, py);
@@ -435,10 +432,10 @@ export async function printInvoiceTemplate(
       doc.rect(sumX, sy, 88, rowH, "F");
       doc.setFont("helvetica", "normal");
       doc.setFontSize(7.5);
-      doc.setTextColor(80, 80, 80);
+      doc.setTextColor(0, 0, 0);
       doc.text(r.label, sumX + 3, sy + 5);
       doc.setFont("helvetica", "bold");
-      doc.setTextColor(30, 30, 30);
+      doc.setTextColor(0, 0, 0);
       doc.text(r.value, W - MR - 2, sy + 5, { align: "right" });
       sy += rowH;
     });
@@ -466,11 +463,11 @@ export async function printInvoiceTemplate(
   doc.roundedRect(ML, wY, W - ML - MR, 16, 2, 2, "FD");
   doc.setFont("helvetica", "normal");
   doc.setFontSize(6.5);
-  doc.setTextColor(140, 140, 140);
+  doc.setTextColor(0, 0, 0);
   doc.text("Arrêté la présente facture à la somme de :", ML + 5, wY + 6);
   doc.setFont("helvetica", "bolditalic");
   doc.setFontSize(7.5);
-  doc.setTextColor(20, 20, 20);
+  doc.setTextColor(0, 0, 0);
   const wordLines = doc.splitTextToSize(frenchWords(opts.totalTtc), W - ML - MR - 10) as string[];
   doc.text(wordLines[0], ML + 5, wY + 13);
 
@@ -480,23 +477,12 @@ export async function printInvoiceTemplate(
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(6.5);
-  doc.setTextColor(50, 50, 50);
+  doc.setTextColor(0, 0, 0);
   doc.text("Conditions de règlement", ML, fY);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(6);
-  doc.setTextColor(100, 100, 100);
+  doc.setTextColor(0, 0, 0);
   doc.text(opts.paymentMethod ?? "Selon conditions convenues", ML, fY + 5);
-
-  const bkX = ML + fCW;
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(6.5);
-  doc.setTextColor(50, 50, 50);
-  doc.text("Coordonnées bancaires", bkX, fY);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(6);
-  doc.setTextColor(100, 100, 100);
-  if (cRib)  doc.text(`RIB : ${cRib}`, bkX, fY + 5);
-  if (cBank) doc.text(`Banque : ${cBank}${cAgence ? ` — ${cAgence}` : ""}`, bkX, fY + 10);
 
   const lgX = ML + fCW * 2;
   doc.setFont("helvetica", "normal");
@@ -515,7 +501,7 @@ export async function printInvoiceTemplate(
   const barLines = doc.splitTextToSize(barText, W - 28) as string[];
   doc.setFont("helvetica", "normal");
   doc.setFontSize(6.5);
-  doc.setTextColor(170, 170, 170);
+  doc.setTextColor(0, 0, 0);
   doc.text(barLines[0], W / 2, 289, { align: "center" });
 
   doc.save(filename);
@@ -554,7 +540,6 @@ export function openFournisseurDocument(opts: FournisseurDocumentOptions): void 
   const companyMf      = co.mf      || "";
   const companyRne     = co.rne     || "";
   const companyRib     = co.rib     || "";
-  const companyIban    = co.iban    || "";
   const companyBank    = co.bank    || "";
   const companyAgence  = co.agence  || "";
 
@@ -579,44 +564,44 @@ export function openFournisseurDocument(opts: FournisseurDocumentOptions): void 
   const taxRows = hasBreakdown
     ? `
       <tr style="background:#f8fafc">
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">Total brut HT</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000">Total brut HT</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px;font-weight:600">${opts.subtotalHt!.toFixed(3)} TND</td>
       </tr>
       ${(opts.totalFodec ?? 0) > 0 ? `<tr>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">FODEC (${opts.fodecRate ?? 1}%)</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000">FODEC (${opts.fodecRate ?? 1}%)</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px">${(opts.totalFodec ?? 0).toFixed(3)} TND</td>
       </tr>` : ""}
       ${(opts.totalVat ?? 0) > 0 ? `<tr>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">TVA (${opts.tvaRate ?? 19}%)</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000">TVA (${opts.tvaRate ?? 19}%)</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px">${(opts.totalVat ?? 0).toFixed(3)} TND</td>
       </tr>` : ""}
       <tr style="background:#f8fafc">
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">Avant timbre</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000">Avant timbre</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px">${(opts.totalBeforeStamp ?? 0).toFixed(3)} TND</td>
       </tr>
       <tr>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">Timbre fiscal</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000">Timbre fiscal</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px">${(opts.timbreFiscal ?? 0).toFixed(3)} TND</td>
       </tr>`
     : `${opts.amountPaid !== undefined ? `
       <tr style="background:#f8fafc">
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">Montant payé</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000">Montant payé</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px;font-weight:600;color:#16a34a">${opts.amountPaid.toFixed(3)} TND</td>
       </tr>
       <tr>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">Restant dû</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000">Restant dû</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px;font-weight:600;color:#dc2626">${Math.max(0, opts.totalTtc - opts.amountPaid).toFixed(3)} TND</td>
       </tr>` : ""}`;
 
   // Product table: single summary row when no line items
   const productRow = `
     <tr>
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:center;color:#64748b;font-size:12px">1</td>
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;font-size:11px;color:#64748b">${opts.supplierRef || opts.invoiceNo}</td>
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;font-size:13px">Facture fournisseur — ${opts.supplierName}</td>
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:center;font-size:13px">1</td>
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:right;font-size:13px">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
+      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;color:#000000;font-size:12px">1</td>
+      <td style="border:1px solid #000000;padding:7px 10px;font-size:11px;color:#000000">${opts.supplierRef || opts.invoiceNo}</td>
+      <td style="border:1px solid #000000;padding:7px 10px;font-size:13px">Facture fournisseur — ${opts.supplierName}</td>
+      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;font-size:13px">1</td>
+      <td style="border:1px solid #000000;padding:7px 10px;text-align:right;font-size:13px">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
+      <td style="border:1px solid #000000;padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
     </tr>`;
 
   const html = `<!doctype html>
@@ -629,9 +614,10 @@ export function openFournisseurDocument(opts: FournisseurDocumentOptions): void 
     body { font-family: Arial, sans-serif; font-size: 13px; color: #0f172a; background: #fff; }
     @page { size: A4; margin: 18mm 15mm; }
     @media print { body { padding: 0; } }
-    .page { max-width: 794px; margin: 0 auto; padding: 24px 28px; display:flex; flex-direction:column; min-height:261mm; }
+    .page { max-width: 794px; margin: 0 auto; padding: 0; display:flex; flex-direction:column; min-height:255mm; }
     table { border-collapse: collapse; width: 100%; }
-    th { font-weight: 600; }
+    th { font-weight: 600; border: 1px solid #000000; }
+    @media print { .page { min-height: 255mm; } }
   </style>
 </head>
 <body>
@@ -642,30 +628,30 @@ export function openFournisseurDocument(opts: FournisseurDocumentOptions): void 
     <tr>
       <td style="vertical-align:top;width:55%">
         <img src="${typeof window !== "undefined" ? window.location.origin : ""}/logo.png" alt="${companyName}" style="height:60px;max-width:180px;object-fit:contain;display:block;margin-bottom:8px"/>
-        <div style="font-size:11px;color:#64748b;margin-top:3px">${companyAddress}</div>
-        <div style="font-size:11px;color:#64748b;margin-top:1px">Tél : ${companyPhone} &nbsp;·&nbsp; ${companyEmail}</div>
-        ${companyMf || companyRne ? `<div style="font-size:11px;color:#64748b;margin-top:4px">${companyMf ? `<strong>MF :</strong> ${companyMf}` : ""}${companyMf && companyRne ? " &nbsp;|&nbsp; " : ""}${companyRne ? `<strong>RNE :</strong> ${companyRne}` : ""}</div>` : ""}
-        ${companyRib ? `<div style="font-size:11px;color:#64748b;margin-top:1px"><strong>RIB :</strong> ${companyRib}${companyBank ? ` &nbsp;(${companyBank}${companyAgence ? " — " + companyAgence : ""})` : ""}</div>` : ""}
+        <div style="font-size:11px;color:#000000;margin-top:3px">${companyAddress}</div>
+        <div style="font-size:11px;color:#000000;margin-top:1px">Tél : ${companyPhone} &nbsp;·&nbsp; ${companyEmail}</div>
+        ${companyMf || companyRne ? `<div style="font-size:11px;color:#000000;margin-top:4px">${companyMf ? `<strong>MF :</strong> ${companyMf}` : ""}${companyMf && companyRne ? " &nbsp;|&nbsp; " : ""}${companyRne ? `<strong>RNE :</strong> ${companyRne}` : ""}</div>` : ""}
+        ${companyRib ? `<div style="font-size:11px;color:#000000;margin-top:1px"><strong>RIB :</strong> ${companyRib}${companyBank ? ` &nbsp;(${companyBank}${companyAgence ? " — " + companyAgence : ""})` : ""}</div>` : ""}
       </td>
       <td style="vertical-align:top;text-align:right;width:45%">
-        <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#64748b;text-transform:uppercase;margin-bottom:4px">Facture Fournisseur</div>
+        <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#000000;text-transform:uppercase;margin-bottom:4px">Facture Fournisseur</div>
         <div style="font-size:26px;font-weight:700;letter-spacing:-1px;color:#0f172a">${opts.invoiceNo}</div>
-        ${opts.supplierRef ? `<div style="font-size:11px;color:#64748b;margin-top:2px">Réf. fournisseur : ${opts.supplierRef}</div>` : ""}
+        ${opts.supplierRef ? `<div style="font-size:11px;color:#000000;margin-top:2px">Réf. fournisseur : ${opts.supplierRef}</div>` : ""}
         <table style="margin-top:10px;margin-left:auto;width:auto">
           <tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Date :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Date :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0">${fmtDate(opts.invoiceDate)}</td>
           </tr>
           <tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Échéance :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Échéance :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0">${fmtDate(opts.dueDate)}</td>
           </tr>
           <tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Statut :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Statut :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0;color:${STATUS_COLOR[st] ?? "#0f172a"}">${STATUS_LABEL[st] ?? st.replace(/_/g, " ")}</td>
           </tr>
           ${opts.orderNo ? `<tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Commande :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Commande :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0">${opts.orderNo}</td>
           </tr>` : ""}
         </table>
@@ -677,26 +663,26 @@ export function openFournisseurDocument(opts: FournisseurDocumentOptions): void 
   <table style="margin-bottom:16px">
     <tr>
       <td style="width:48%;vertical-align:top;border:1px solid #e2e8f0;border-radius:6px;padding:10px 14px">
-        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#64748b;font-weight:600;margin-bottom:6px">Acheteur</div>
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#000000;font-weight:600;margin-bottom:6px">Acheteur</div>
         <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px">
           <img src="${typeof window !== "undefined" ? window.location.origin : ""}/logo.png" alt="${companyName}" style="height:22px;object-fit:contain"/>
           ${companyName}
         </div>
-        <div style="font-size:11px;color:#64748b;margin-top:3px">${companyAddress}</div>
-        ${companyMf ? `<div style="font-size:11px;color:#64748b;margin-top:1px">MF : ${companyMf}</div>` : ""}
+        <div style="font-size:11px;color:#000000;margin-top:3px">${companyAddress}</div>
+        ${companyMf ? `<div style="font-size:11px;color:#000000;margin-top:1px">MF : ${companyMf}</div>` : ""}
       </td>
       <td style="width:4%"></td>
       <td style="width:48%;vertical-align:top;border:1px solid #e2e8f0;border-radius:6px;padding:10px 14px">
-        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#64748b;font-weight:600;margin-bottom:6px">Fournisseur</div>
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#000000;font-weight:600;margin-bottom:6px">Fournisseur</div>
         <div style="font-size:13px;font-weight:700">${opts.supplierName}</div>
       </td>
     </tr>
   </table>
 
   <!-- PRODUCT TABLE -->
-  <table style="margin-bottom:0;border:1px solid #e2e8f0;border-radius:6px;overflow:hidden">
+  <table style="margin-bottom:0;border:1px solid #000000;border-radius:6px;overflow:hidden">
     <thead>
-      <tr style="background:#0f172a;color:#fff">
+      <tr style="background:#ffffff;color:#000000">
         <th style="padding:9px 10px;text-align:center;font-size:11px;width:32px">N°</th>
         <th style="padding:9px 10px;text-align:left;font-size:11px;width:70px">Réf.</th>
         <th style="padding:9px 10px;text-align:left;font-size:11px">Désignation</th>
@@ -715,35 +701,29 @@ export function openFournisseurDocument(opts: FournisseurDocumentOptions): void 
   <div style="display:flex;justify-content:flex-end;margin-top:16px;margin-bottom:16px">
     <table style="width:280px;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 6px 6px;overflow:hidden">
       ${taxRows}
-      <tr style="background:#0f172a">
-        <td style="padding:9px 12px;font-size:13px;font-weight:700;color:#fff">NET À PAYER TTC</td>
-        <td style="padding:9px 12px;text-align:right;font-size:13px;font-weight:700;color:#fff">${opts.totalTtc.toFixed(3)} TND</td>
+      <tr style="background:#ffffff;border-top:2px solid #000000">
+        <td style="padding:9px 12px;font-size:13px;font-weight:700;color:#000000">NET À PAYER TTC</td>
+        <td style="padding:9px 12px;text-align:right;font-size:13px;font-weight:700;color:#000000">${opts.totalTtc.toFixed(3)} TND</td>
       </tr>
     </table>
   </div>
 
   <!-- MONTANT EN LETTRES -->
   <div style="border:1px solid #e2e8f0;border-radius:6px;padding:10px 14px;margin-bottom:16px;background:#f8fafc">
-    <span style="font-size:11px;color:#64748b">Arrêté la présente facture à la somme de : </span>
+    <span style="font-size:11px;color:#000000">Arrêté la présente facture à la somme de : </span>
     <strong style="font-size:12px">${amountInWords}</strong>
   </div>
 
   <!-- FOOTER -->
-  <div style="border-top:1px solid #e2e8f0;padding-top:12px;display:flex;justify-content:space-between;align-items:flex-start">
-    <div style="font-size:10px;color:#64748b;max-width:55%">
+  <div style="border-top:1px solid #e2e8f0;padding-top:12px">
+    <div style="font-size:10px;color:#000000">
       <strong style="color:#0f172a">Conditions de règlement :</strong> Selon conditions convenues<br/>
       Tout retard de paiement entraîne des pénalités au taux légal en vigueur.<br/>
       En cas de litige, compétence exclusive du Tribunal de Commerce de Tunis.
     </div>
-    <div style="font-size:10px;color:#64748b;text-align:right">
-      <strong style="color:#0f172a">Coordonnées bancaires</strong><br/>
-      ${companyRib ? `RIB : ${companyRib}<br/>` : ""}
-      ${companyIban ? `IBAN : ${companyIban}<br/>` : ""}
-      ${companyBank ? `Banque : ${companyBank}${companyAgence ? " · Agence : " + companyAgence : ""}` : ""}
-    </div>
   </div>
 
-  <div style="margin-top:14px;text-align:center;font-size:9px;color:#94a3b8;border-top:1px solid #f1f5f9;padding-top:10px">
+  <div style="margin-top:14px;text-align:center;font-size:9px;color:#000000;border-top:1px solid #f1f5f9;padding-top:10px">
     ${companyName}${companyMf ? " · MF : " + companyMf : ""}${companyRne ? " · RNE : " + companyRne : ""} · ${companyAddress} · ${companyPhone} · ${companyEmail}
   </div>
 
@@ -799,7 +779,6 @@ export function openClientDocument(opts: ClientDocumentOptions): void {
   const companyMf      = co.mf      || "";
   const companyRne     = co.rne     || "";
   const companyRib     = co.rib     || "";
-  const companyIban    = co.iban    || "";
   const companyBank    = co.bank    || "";
   const companyAgence  = co.agence  || "";
 
@@ -829,51 +808,51 @@ export function openClientDocument(opts: ClientDocumentOptions): void {
   const productRows = opts.lines && opts.lines.length > 0
     ? opts.lines.map((l, idx) => `
       <tr style="background:${idx % 2 === 0 ? "#fff" : "#f8fafc"}">
-        <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:center;color:#64748b;font-size:12px">${idx + 1}</td>
-        <td style="border:1px solid #e2e8f0;padding:7px 10px;font-size:11px;color:#64748b">${l.ref || "—"}</td>
-        <td style="border:1px solid #e2e8f0;padding:7px 10px;font-size:13px">${l.description}</td>
-        <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:center;font-size:13px">${l.qty}</td>
-        <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:right;font-size:13px">${l.unitPrice.toFixed(3)}</td>
-        <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${l.totalHt.toFixed(3)}</td>
+        <td style="border:1px solid #000000;padding:7px 10px;text-align:center;color:#000000;font-size:12px">${idx + 1}</td>
+        <td style="border:1px solid #000000;padding:7px 10px;font-size:11px;color:#000000">${l.ref || "—"}</td>
+        <td style="border:1px solid #000000;padding:7px 10px;font-size:13px">${l.description}</td>
+        <td style="border:1px solid #000000;padding:7px 10px;text-align:center;font-size:13px">${l.qty}</td>
+        <td style="border:1px solid #000000;padding:7px 10px;text-align:right;font-size:13px">${l.unitPrice.toFixed(3)}</td>
+        <td style="border:1px solid #000000;padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${l.totalHt.toFixed(3)}</td>
       </tr>`).join("")
     : `<tr>
-        <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:center;color:#64748b;font-size:12px">1</td>
-        <td style="border:1px solid #e2e8f0;padding:7px 10px;font-size:11px;color:#64748b">${opts.invoiceNo}</td>
-        <td style="border:1px solid #e2e8f0;padding:7px 10px;font-size:13px">Facture client — ${opts.customerName}</td>
-        <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:center;font-size:13px">1</td>
-        <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:right;font-size:13px">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
-        <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
+        <td style="border:1px solid #000000;padding:7px 10px;text-align:center;color:#000000;font-size:12px">1</td>
+        <td style="border:1px solid #000000;padding:7px 10px;font-size:11px;color:#000000">${opts.invoiceNo}</td>
+        <td style="border:1px solid #000000;padding:7px 10px;font-size:13px">Facture client — ${opts.customerName}</td>
+        <td style="border:1px solid #000000;padding:7px 10px;text-align:center;font-size:13px">1</td>
+        <td style="border:1px solid #000000;padding:7px 10px;text-align:right;font-size:13px">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
+        <td style="border:1px solid #000000;padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
       </tr>`;
 
   const taxRows = hasBreakdown
     ? `
       <tr style="background:#f8fafc">
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">Total brut HT</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000">Total brut HT</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px;font-weight:600">${opts.subtotalHt!.toFixed(3)} TND</td>
       </tr>
       ${(opts.totalFodec ?? 0) > 0 ? `<tr>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">FODEC (${opts.fodecRate ?? 1}%)</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000">FODEC (${opts.fodecRate ?? 1}%)</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px">${(opts.totalFodec ?? 0).toFixed(3)} TND</td>
       </tr>` : ""}
       ${(opts.totalVat ?? 0) > 0 ? `<tr>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">TVA (${opts.tvaRate ?? 19}%)</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000">TVA (${opts.tvaRate ?? 19}%)</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px">${(opts.totalVat ?? 0).toFixed(3)} TND</td>
       </tr>` : ""}
       <tr style="background:#f8fafc">
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">Avant timbre</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000">Avant timbre</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px">${(opts.totalBeforeStamp ?? 0).toFixed(3)} TND</td>
       </tr>
       <tr>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">Timbre fiscal</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000">Timbre fiscal</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px">${(opts.timbreFiscal ?? 0).toFixed(3)} TND</td>
       </tr>`
     : `${opts.amountPaid !== undefined ? `
       <tr style="background:#f8fafc">
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">Montant payé</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000">Montant payé</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px;font-weight:600;color:#16a34a">${opts.amountPaid.toFixed(3)} TND</td>
       </tr>
       <tr>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">Restant dû</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000">Restant dû</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px;font-weight:600;color:#dc2626">${Math.max(0, opts.totalTtc - opts.amountPaid).toFixed(3)} TND</td>
       </tr>` : ""}`;
 
@@ -887,9 +866,10 @@ export function openClientDocument(opts: ClientDocumentOptions): void {
     body { font-family: Arial, sans-serif; font-size: 13px; color: #0f172a; background: #fff; }
     @page { size: A4; margin: 18mm 15mm; }
     @media print { body { padding: 0; } }
-    .page { max-width: 794px; margin: 0 auto; padding: 24px 28px; display:flex; flex-direction:column; min-height:261mm; }
+    .page { max-width: 794px; margin: 0 auto; padding: 0; display:flex; flex-direction:column; min-height:255mm; }
     table { border-collapse: collapse; width: 100%; }
-    th { font-weight: 600; }
+    th { font-weight: 600; border: 1px solid #000000; }
+    @media print { .page { min-height: 255mm; } }
   </style>
 </head>
 <body>
@@ -900,33 +880,33 @@ export function openClientDocument(opts: ClientDocumentOptions): void {
     <tr>
       <td style="vertical-align:top;width:55%">
         <img src="${origin}/logo.png" alt="${companyName}" style="height:60px;max-width:180px;object-fit:contain;display:block;margin-bottom:8px"/>
-        <div style="font-size:11px;color:#64748b;margin-top:3px">${companyAddress}</div>
-        <div style="font-size:11px;color:#64748b;margin-top:1px">Tél : ${companyPhone} &nbsp;·&nbsp; ${companyEmail}</div>
-        ${companyMf || companyRne ? `<div style="font-size:11px;color:#64748b;margin-top:4px">${companyMf ? `<strong>MF :</strong> ${companyMf}` : ""}${companyMf && companyRne ? " &nbsp;|&nbsp; " : ""}${companyRne ? `<strong>RNE :</strong> ${companyRne}` : ""}</div>` : ""}
-        ${companyRib ? `<div style="font-size:11px;color:#64748b;margin-top:1px"><strong>RIB :</strong> ${companyRib}${companyBank ? ` &nbsp;(${companyBank}${companyAgence ? " — " + companyAgence : ""})` : ""}</div>` : ""}
+        <div style="font-size:11px;color:#000000;margin-top:3px">${companyAddress}</div>
+        <div style="font-size:11px;color:#000000;margin-top:1px">Tél : ${companyPhone} &nbsp;·&nbsp; ${companyEmail}</div>
+        ${companyMf || companyRne ? `<div style="font-size:11px;color:#000000;margin-top:4px">${companyMf ? `<strong>MF :</strong> ${companyMf}` : ""}${companyMf && companyRne ? " &nbsp;|&nbsp; " : ""}${companyRne ? `<strong>RNE :</strong> ${companyRne}` : ""}</div>` : ""}
+        ${companyRib ? `<div style="font-size:11px;color:#000000;margin-top:1px"><strong>RIB :</strong> ${companyRib}${companyBank ? ` &nbsp;(${companyBank}${companyAgence ? " — " + companyAgence : ""})` : ""}</div>` : ""}
       </td>
       <td style="vertical-align:top;text-align:right;width:45%">
         <div style="font-size:26px;font-weight:700;letter-spacing:-1px;color:#0f172a">FACTURE</div>
-        <div style="font-size:15px;font-weight:600;color:#334155;margin-top:2px">${opts.invoiceNo}</div>
+        <div style="font-size:15px;font-weight:600;color:#000000;margin-top:2px">${opts.invoiceNo}</div>
         <table style="margin-top:10px;margin-left:auto;width:auto">
           <tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Date :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Date :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0">${fmtDate(opts.invoiceDate)}</td>
           </tr>
           <tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Échéance :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Échéance :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0">${fmtDate(opts.dueDate)}</td>
           </tr>
           <tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Règlement :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Règlement :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0">${PAYMENT_METHOD[pm] || pm || "—"}</td>
           </tr>
           <tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Statut :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Statut :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0;color:${STATUS_COLOR[st] ?? "#0f172a"}">${PAYMENT_STATUS[st] || st.replace(/_/g, " ") || "—"}</td>
           </tr>
           ${opts.orderNo ? `<tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Commande :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Commande :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0">${opts.orderNo}</td>
           </tr>` : ""}
         </table>
@@ -938,28 +918,28 @@ export function openClientDocument(opts: ClientDocumentOptions): void {
   <table style="margin-bottom:16px">
     <tr>
       <td style="width:48%;vertical-align:top;border:1px solid #e2e8f0;border-radius:6px;padding:10px 14px">
-        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#64748b;font-weight:600;margin-bottom:6px">Vendeur</div>
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#000000;font-weight:600;margin-bottom:6px">Vendeur</div>
         <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px">
           <img src="${origin}/logo.png" alt="${companyName}" style="height:22px;object-fit:contain"/>
           ${companyName}
         </div>
-        <div style="font-size:11px;color:#64748b;margin-top:3px">${companyAddress}</div>
-        ${companyMf ? `<div style="font-size:11px;color:#64748b;margin-top:1px">MF : ${companyMf}</div>` : ""}
+        <div style="font-size:11px;color:#000000;margin-top:3px">${companyAddress}</div>
+        ${companyMf ? `<div style="font-size:11px;color:#000000;margin-top:1px">MF : ${companyMf}</div>` : ""}
       </td>
       <td style="width:4%"></td>
       <td style="width:48%;vertical-align:top;border:1px solid #e2e8f0;border-radius:6px;padding:10px 14px">
-        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#64748b;font-weight:600;margin-bottom:6px">Client / Destinataire</div>
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#000000;font-weight:600;margin-bottom:6px">Client / Destinataire</div>
         <div style="font-size:13px;font-weight:700">${opts.customerName}</div>
-        ${opts.customerMf ? `<div style="font-size:11px;color:#64748b;margin-top:3px">MF : ${opts.customerMf}</div>` : ""}
-        ${opts.customerAddress ? `<div style="font-size:11px;color:#64748b;margin-top:1px">Adresse : ${opts.customerAddress}</div>` : ""}
+        ${opts.customerMf ? `<div style="font-size:11px;color:#000000;margin-top:3px">MF : ${opts.customerMf}</div>` : ""}
+        ${opts.customerAddress ? `<div style="font-size:11px;color:#000000;margin-top:1px">Adresse : ${opts.customerAddress}</div>` : ""}
       </td>
     </tr>
   </table>
 
   <!-- PRODUCT TABLE -->
-  <table style="margin-bottom:0;border:1px solid #e2e8f0;border-radius:6px;overflow:hidden">
+  <table style="margin-bottom:0;border:1px solid #000000;border-radius:6px;overflow:hidden">
     <thead>
-      <tr style="background:#0f172a;color:#fff">
+      <tr style="background:#ffffff;color:#000000">
         <th style="padding:9px 10px;text-align:center;font-size:11px;width:32px">N°</th>
         <th style="padding:9px 10px;text-align:left;font-size:11px;width:70px">Réf.</th>
         <th style="padding:9px 10px;text-align:left;font-size:11px">Désignation</th>
@@ -978,35 +958,37 @@ export function openClientDocument(opts: ClientDocumentOptions): void {
   <div style="display:flex;justify-content:flex-end;margin-top:16px;margin-bottom:16px">
     <table style="width:280px;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 6px 6px;overflow:hidden">
       ${taxRows}
-      <tr style="background:#0f172a">
-        <td style="padding:9px 12px;font-size:13px;font-weight:700;color:#fff">NET À PAYER TTC</td>
-        <td style="padding:9px 12px;text-align:right;font-size:13px;font-weight:700;color:#fff">${opts.totalTtc.toFixed(3)} TND</td>
+      <tr style="background:#ffffff;border-top:2px solid #000000">
+        <td style="padding:9px 12px;font-size:13px;font-weight:700;color:#000000">NET À PAYER TTC</td>
+        <td style="padding:9px 12px;text-align:right;font-size:13px;font-weight:700;color:#000000">${opts.totalTtc.toFixed(3)} TND</td>
       </tr>
     </table>
   </div>
 
   <!-- MONTANT EN LETTRES -->
   <div style="border:1px solid #e2e8f0;border-radius:6px;padding:10px 14px;margin-bottom:16px;background:#f8fafc">
-    <span style="font-size:11px;color:#64748b">Arrêté la présente facture à la somme de : </span>
+    <span style="font-size:11px;color:#000000">Arrêté la présente facture à la somme de : </span>
     <strong style="font-size:12px">${amountInWords}</strong>
   </div>
 
+  <!-- SIGNATURE -->
+  <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+    <div style="width:45%">
+      <div style="font-size:10px;color:#000000;margin-bottom:4px">Cachet &amp; Signature</div>
+      <div style="border:1px solid #000000;border-radius:6px;height:70px"></div>
+    </div>
+  </div>
+
   <!-- FOOTER -->
-  <div style="border-top:1px solid #e2e8f0;padding-top:12px;display:flex;justify-content:space-between;align-items:flex-start">
-    <div style="font-size:10px;color:#64748b;max-width:55%">
+  <div style="border-top:1px solid #e2e8f0;padding-top:12px">
+    <div style="font-size:10px;color:#000000">
       <strong style="color:#0f172a">Conditions de règlement :</strong> ${PAYMENT_METHOD[pm] || "Selon conditions convenues"}<br/>
       Tout retard de paiement entraîne des pénalités au taux légal en vigueur.<br/>
       En cas de litige, compétence exclusive du Tribunal de Commerce de Tunis.
     </div>
-    <div style="font-size:10px;color:#64748b;text-align:right">
-      <strong style="color:#0f172a">Coordonnées bancaires</strong><br/>
-      ${companyRib ? `RIB : ${companyRib}<br/>` : ""}
-      ${companyIban ? `IBAN : ${companyIban}<br/>` : ""}
-      ${companyBank ? `Banque : ${companyBank}${companyAgence ? " · Agence : " + companyAgence : ""}` : ""}
-    </div>
   </div>
 
-  <div style="margin-top:14px;text-align:center;font-size:9px;color:#94a3b8;border-top:1px solid #f1f5f9;padding-top:10px">
+  <div style="margin-top:14px;text-align:center;font-size:9px;color:#000000;border-top:1px solid #f1f5f9;padding-top:10px">
     ${companyName}${companyMf ? " · MF : " + companyMf : ""}${companyRne ? " · RNE : " + companyRne : ""} · ${companyAddress} · ${companyPhone} · ${companyEmail}
   </div>
 
@@ -1197,14 +1179,14 @@ export function openBonReceptionDocument(opts: BonReceptionDocumentOptions): voi
 
   const lineRows = (opts.lines ?? []).map((l, i) => `
     <tr style="background:${i % 2 === 0 ? "#ffffff" : "#f8fafc"}">
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:center;color:#64748b;font-size:12px">${i + 1}</td>
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;font-size:11px;color:#64748b">${l.sku || "—"}</td>
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;font-size:13px">${l.name}</td>
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:center;font-size:13px">${l.orderedQty}</td>
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:center;font-size:13px">${l.receivedQty}</td>
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:center;font-size:13px">${l.acceptedQty}</td>
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:center;font-size:12px;color:${QUALITY_COLOR[l.qualityStatus] || "#64748b"};font-weight:600">${QUALITY_LABEL[l.qualityStatus] || l.qualityStatus}</td>
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;font-size:11px;color:#64748b">${l.lotRef || "—"}</td>
+      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;color:#000000;font-size:12px">${i + 1}</td>
+      <td style="border:1px solid #000000;padding:7px 10px;font-size:11px;color:#000000">${l.sku || "—"}</td>
+      <td style="border:1px solid #000000;padding:7px 10px;font-size:13px">${l.name}</td>
+      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;font-size:13px">${l.orderedQty}</td>
+      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;font-size:13px">${l.receivedQty}</td>
+      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;font-size:13px">${l.acceptedQty}</td>
+      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;font-size:12px;color:${QUALITY_COLOR[l.qualityStatus] || "#64748b"};font-weight:600">${QUALITY_LABEL[l.qualityStatus] || l.qualityStatus}</td>
+      <td style="border:1px solid #000000;padding:7px 10px;font-size:11px;color:#000000">${l.lotRef || "—"}</td>
     </tr>`).join("");
 
   const html = `<!doctype html>
@@ -1237,27 +1219,27 @@ export function openBonReceptionDocument(opts: BonReceptionDocumentOptions): voi
   </div>
 
   <div style="border:1px solid #e2e8f0;border-top:none;padding:12px 20px;background:#f8fafc;display:flex;gap:32px;flex-wrap:wrap">
-    <div><span style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em">Date</span><br/><strong>${fmtDate(opts.invoiceDate)}</strong></div>
-    <div><span style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em">N° Commande</span><br/><strong>${opts.orderNo || "—"}</strong></div>
-    <div><span style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em">Dépôt</span><br/><strong>${opts.depotName || "—"}</strong></div>
-    <div><span style="font-size:10px;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em">Statut</span><br/><span style="font-weight:700;color:${stColor}">${stLabel}</span></div>
+    <div><span style="font-size:10px;color:#000000;text-transform:uppercase;letter-spacing:.08em">Date</span><br/><strong>${fmtDate(opts.invoiceDate)}</strong></div>
+    <div><span style="font-size:10px;color:#000000;text-transform:uppercase;letter-spacing:.08em">N° Commande</span><br/><strong>${opts.orderNo || "—"}</strong></div>
+    <div><span style="font-size:10px;color:#000000;text-transform:uppercase;letter-spacing:.08em">Dépôt</span><br/><strong>${opts.depotName || "—"}</strong></div>
+    <div><span style="font-size:10px;color:#000000;text-transform:uppercase;letter-spacing:.08em">Statut</span><br/><span style="font-weight:700;color:${stColor}">${stLabel}</span></div>
   </div>
 
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #e2e8f0;border-top:none">
     <div style="padding:16px 20px;border-right:1px solid #e2e8f0">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;margin-bottom:8px">Acheteur / Destinataire</div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#000000;margin-bottom:8px">Acheteur / Destinataire</div>
       <div style="font-weight:700;font-size:14px;color:#0f766e">${companyName}</div>
-      ${companyAddress ? `<div style="font-size:12px;color:#64748b;margin-top:3px">${companyAddress}</div>` : ""}
-      ${companyPhone ? `<div style="font-size:12px;color:#64748b">Tél : ${companyPhone}</div>` : ""}
-      ${companyEmail ? `<div style="font-size:12px;color:#64748b">${companyEmail}</div>` : ""}
-      ${companyMf ? `<div style="font-size:12px;color:#64748b;margin-top:4px">MF : ${companyMf}</div>` : ""}
-      ${companyRne ? `<div style="font-size:12px;color:#64748b">RNE : ${companyRne}</div>` : ""}
+      ${companyAddress ? `<div style="font-size:12px;color:#000000;margin-top:3px">${companyAddress}</div>` : ""}
+      ${companyPhone ? `<div style="font-size:12px;color:#000000">Tél : ${companyPhone}</div>` : ""}
+      ${companyEmail ? `<div style="font-size:12px;color:#000000">${companyEmail}</div>` : ""}
+      ${companyMf ? `<div style="font-size:12px;color:#000000;margin-top:4px">MF : ${companyMf}</div>` : ""}
+      ${companyRne ? `<div style="font-size:12px;color:#000000">RNE : ${companyRne}</div>` : ""}
     </div>
     <div style="padding:16px 20px;background:#f8fafc">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8;margin-bottom:8px">Fournisseur</div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#000000;margin-bottom:8px">Fournisseur</div>
       <div style="font-weight:700;font-size:14px">${opts.supplierName}</div>
-      ${companyRib ? `<div style="font-size:12px;color:#64748b;margin-top:4px">RIB : ${companyRib}</div>` : ""}
-      ${companyBank ? `<div style="font-size:12px;color:#64748b">Banque : ${companyBank}</div>` : ""}
+      ${companyRib ? `<div style="font-size:12px;color:#000000;margin-top:4px">RIB : ${companyRib}</div>` : ""}
+      ${companyBank ? `<div style="font-size:12px;color:#000000">Banque : ${companyBank}</div>` : ""}
     </div>
   </div>
 
@@ -1276,7 +1258,7 @@ export function openBonReceptionDocument(opts: BonReceptionDocumentOptions): voi
         </tr>
       </thead>
       <tbody>
-        ${lineRows || `<tr><td colspan="8" style="padding:20px;text-align:center;color:#94a3b8;font-size:12px">Aucune ligne</td></tr>`}
+        ${lineRows || `<tr><td colspan="8" style="padding:20px;text-align:center;color:#000000;font-size:12px">Aucune ligne</td></tr>`}
       </tbody>
     </table>
   </div>
@@ -1290,11 +1272,11 @@ export function openBonReceptionDocument(opts: BonReceptionDocumentOptions): voi
   <div style="display:flex;justify-content:flex-end;margin-top:16px">
     <table style="border-collapse:collapse;min-width:260px">
       <tr style="background:#f8fafc">
-        <td style="padding:8px 14px;font-size:12px;color:#64748b">Total lignes</td>
+        <td style="padding:8px 14px;font-size:12px;color:#000000">Total lignes</td>
         <td style="padding:8px 14px;text-align:right;font-size:13px;font-weight:700">${(opts.lines ?? []).length} ligne${(opts.lines ?? []).length !== 1 ? "s" : ""}</td>
       </tr>
       <tr>
-        <td style="padding:8px 14px;font-size:12px;color:#64748b">Total reçu</td>
+        <td style="padding:8px 14px;font-size:12px;color:#000000">Total reçu</td>
         <td style="padding:8px 14px;text-align:right;font-size:13px;font-weight:700">${(opts.lines ?? []).reduce((s, l) => s + l.receivedQty, 0)} unités</td>
       </tr>
       <tr style="background:#0f766e">
@@ -1304,7 +1286,7 @@ export function openBonReceptionDocument(opts: BonReceptionDocumentOptions): voi
     </table>
   </div>
 
-  <div style="margin-top:24px;border-top:2px solid #e2e8f0;padding-top:12px;display:flex;justify-content:space-between;font-size:10px;color:#94a3b8">
+  <div style="margin-top:24px;border-top:2px solid #e2e8f0;padding-top:12px;display:flex;justify-content:space-between;font-size:10px;color:#000000">
     <span>${companyName}${companyMf ? ` · MF ${companyMf}` : ""}</span>
     <span>Imprimé le ${new Date().toLocaleDateString("fr-TN", { day: "2-digit", month: "long", year: "numeric" } as Intl.DateTimeFormatOptions)}</span>
     <span>Bon de réception ${opts.receiptNo}</span>
@@ -1341,7 +1323,7 @@ export async function printInvoicePdf(
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7);
-  doc.setTextColor(160, 160, 160);
+  doc.setTextColor(0, 0, 0);
   doc.text(docType.toUpperCase(), ML, 10);
 
   doc.setFont("helvetica", "bold");
@@ -1355,7 +1337,7 @@ export async function printInvoicePdf(
   });
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7);
-  doc.setTextColor(160, 160, 160);
+  doc.setTextColor(0, 0, 0);
   doc.text(`Imprimé le : ${printedAt}`, W - MR, 22, { align: "right" });
 
   const halfW = bodyW / 2 - 3;
@@ -1368,12 +1350,12 @@ export async function printInvoicePdf(
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(6.5);
-  doc.setTextColor(150, 150, 150);
+  doc.setTextColor(0, 0, 0);
   doc.text(partyLabel.toUpperCase(), ML + 4, boxY + 7);
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
-  doc.setTextColor(20, 20, 20);
+  doc.setTextColor(0, 0, 0);
   const nameLines = doc.splitTextToSize(partyName, halfW - 8) as string[];
   doc.text(nameLines[0], ML + 4, boxY + 17);
 
@@ -1388,12 +1370,12 @@ export async function printInvoicePdf(
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(6.5);
-    doc.setTextColor(150, 150, 150);
+    doc.setTextColor(0, 0, 0);
     doc.text(d.label.toUpperCase(), x, y + 3);
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(8.5);
-    doc.setTextColor(25, 25, 25);
+    doc.setTextColor(0, 0, 0);
     doc.text(d.value, x, y + 10);
   });
 
@@ -1405,7 +1387,7 @@ export async function printInvoicePdf(
   const amtHeaderY = sepY + 7;
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7);
-  doc.setTextColor(150, 150, 150);
+  doc.setTextColor(0, 0, 0);
   doc.text("RÉCAPITULATIF FINANCIER", ML, amtHeaderY);
 
   const tblY = amtHeaderY + 5;
@@ -1442,7 +1424,7 @@ export async function printInvoicePdf(
   doc.line(ML, 287, W - MR, 287);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7);
-  doc.setTextColor(180, 180, 180);
+  doc.setTextColor(0, 0, 0);
   doc.text("Page 1 / 1", W / 2, 292, { align: "center" });
 
   doc.save(filename);

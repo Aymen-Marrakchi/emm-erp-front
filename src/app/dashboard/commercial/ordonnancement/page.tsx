@@ -122,6 +122,21 @@ function normalizeAllocations(allocations: AllocationRow[]) {
   );
 }
 
+// Prefer the server's message (e.g. the 409 stock-conflict detail) over the
+// generic Axios "Request failed with status code 409".
+function getErrorMessage(err: unknown, fallback: string): string {
+  if (
+    typeof err === "object" && err !== null &&
+    "response" in err && typeof err.response === "object" && err.response !== null &&
+    "data" in err.response && typeof err.response.data === "object" && err.response.data !== null &&
+    "message" in err.response.data && typeof err.response.data.message === "string"
+  ) {
+    return err.response.data.message;
+  }
+  if (err instanceof Error && err.message) return err.message;
+  return fallback;
+}
+
 export default function OrdonnancementPage() {
   const params = useSearchParams();
   const focusId = params.get("order");
@@ -240,7 +255,7 @@ export default function OrdonnancementPage() {
         setSelectedId(initialSelected);
       }
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to load ordonnancement");
+      setError(getErrorMessage(err, "Failed to load ordonnancement"));
     } finally {
       setLoading(false);
     }
@@ -351,7 +366,7 @@ export default function OrdonnancementPage() {
       setSuccess("Ordonnancement saved.");
       await load(null, true);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to save ordonnancement");
+      setError(getErrorMessage(err, "Failed to save ordonnancement"));
     } finally {
       setSaving(false);
     }
@@ -371,7 +386,7 @@ export default function OrdonnancementPage() {
 
       setSuccess("Production request created. You can follow it in Backorders.");
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to request production");
+      setError(getErrorMessage(err, "Failed to request production"));
     } finally {
       setRequestingProduction(false);
     }

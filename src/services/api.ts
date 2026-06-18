@@ -27,4 +27,23 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// On an authenticated 401 (expired / invalid token), clear the session and send
+// the user back to login. The login request itself is excluded so the login page
+// can still display "invalid credentials" on a wrong password.
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error?.response?.status;
+    const url: string = error?.config?.url || "";
+    const isLoginCall = url.includes("/auth/login");
+    if (status === 401 && !isLoginCall && typeof window !== "undefined") {
+      setAuthToken(null);
+      if (!window.location.pathname.startsWith("/login")) {
+        window.location.href = "/login";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;

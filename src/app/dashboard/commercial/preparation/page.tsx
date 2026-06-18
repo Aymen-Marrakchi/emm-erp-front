@@ -101,16 +101,16 @@ async function buildBLPdf(order: SalesOrder): Promise<Blob> {
   if (logoDataUrl) doc.addImage(logoDataUrl, "PNG", MARGIN, 8, 28, 18);
 
   // ── Company ───────────────────────────────────────────────────────────────
-  doc.setFontSize(8).setFont("helvetica", "normal").setTextColor(100, 116, 139);
+  doc.setFontSize(8).setFont("helvetica", "normal").setTextColor(0, 0, 0);
   doc.text("Route de Gabès Km 6, Sfax, Tunisie", MARGIN, 30);
   doc.text("Tél : +(216) 98 241 790  ·  info@emmtn.com", MARGIN, 34);
 
   // ── BL header (right) ─────────────────────────────────────────────────────
-  doc.setFontSize(20).setFont("helvetica", "bold").setTextColor(15, 23, 42);
+  doc.setFontSize(20).setFont("helvetica", "bold").setTextColor(0, 0, 0);
   doc.text("BON DE LIVRAISON", W - MARGIN, 14, { align: "right" });
-  doc.setFontSize(11).setFont("helvetica", "normal").setTextColor(51, 65, 85);
+  doc.setFontSize(11).setFont("helvetica", "normal").setTextColor(0, 0, 0);
   doc.text(order.orderNo, W - MARGIN, 21, { align: "right" });
-  doc.setFontSize(8).setTextColor(100, 116, 139);
+  doc.setFontSize(8).setTextColor(0, 0, 0);
   const issueDate = new Date().toLocaleDateString("fr-FR");
   doc.text(`Date : ${issueDate}`, W - MARGIN, 27, { align: "right" });
   doc.text(`Client : ${order.customerName}`, W - MARGIN, 32, { align: "right" });
@@ -125,13 +125,13 @@ async function buildBLPdf(order: SalesOrder): Promise<Blob> {
   doc.roundedRect(MARGIN, boxY, 85, boxH, 2, 2, "FD");
   doc.roundedRect(W / 2 + 2, boxY, 85, boxH, 2, 2, "FD");
 
-  doc.setFontSize(7).setFont("helvetica", "bold").setTextColor(100, 116, 139);
+  doc.setFontSize(7).setFont("helvetica", "bold").setTextColor(0, 0, 0);
   doc.text("ÉMETTEUR", MARGIN + 3, boxY + 5);
   doc.text("CLIENT / DESTINATAIRE", W / 2 + 5, boxY + 5);
-  doc.setFontSize(9).setFont("helvetica", "bold").setTextColor(15, 23, 42);
+  doc.setFontSize(9).setFont("helvetica", "bold").setTextColor(0, 0, 0);
   doc.text("EMM TN", MARGIN + 3, boxY + 11);
   doc.text(order.customerName, W / 2 + 5, boxY + 11);
-  doc.setFontSize(7.5).setFont("helvetica", "normal").setTextColor(100, 116, 139);
+  doc.setFontSize(7.5).setFont("helvetica", "normal").setTextColor(0, 0, 0);
   doc.text("Route de Gabès Km 6, Sfax", MARGIN + 3, boxY + 16);
 
   // ── Compute line totals ───────────────────────────────────────────────────
@@ -235,7 +235,7 @@ async function buildBLPdf(order: SalesOrder): Promise<Blob> {
     } else {
       doc.setFillColor(i % 2 === 0 ? 248 : 255, i % 2 === 0 ? 250 : 255, i % 2 === 0 ? 252 : 255);
       doc.rect(totalsX, y, col1W + col2W, rowH, "F");
-      doc.setTextColor(15, 23, 42);
+      doc.setTextColor(0, 0, 0);
     }
     doc.setDrawColor(226, 232, 240);
     doc.rect(totalsX, y, col1W + col2W, rowH, "S");
@@ -252,20 +252,20 @@ async function buildBLPdf(order: SalesOrder): Promise<Blob> {
   const sigBoxH = 18;
   const sigX    = totalsX;
 
-  doc.setFontSize(7.5).setFont("helvetica", "bold").setTextColor(100, 116, 139);
+  doc.setFontSize(7.5).setFont("helvetica", "bold").setTextColor(0, 0, 0);
   doc.text("SIGNATURE", sigX + sigBoxW / 2, sigY, { align: "center" });
 
   doc.setDrawColor(203, 213, 225).setLineWidth(0.3).setLineDashPattern([1.5, 1.5], 0);
   doc.roundedRect(sigX, sigY + 3, sigBoxW, sigBoxH, 1, 1);
   doc.setLineDashPattern([], 0);
 
-  doc.setFontSize(7).setFont("helvetica", "normal").setTextColor(148, 163, 184);
+  doc.setFontSize(7).setFont("helvetica", "normal").setTextColor(0, 0, 0);
   doc.text("Signature & Cachet", sigX + sigBoxW / 2, sigY + 3 + sigBoxH + 4, { align: "center" });
 
   // ── Footer ────────────────────────────────────────────────────────────────
   doc.setDrawColor(226, 232, 240).setLineWidth(0.2);
   doc.line(MARGIN, PAGE_H - 10, W - MARGIN, PAGE_H - 10);
-  doc.setFontSize(7).setFont("helvetica", "normal").setTextColor(148, 163, 184);
+  doc.setFontSize(7).setFont("helvetica", "normal").setTextColor(0, 0, 0);
   doc.text("EMM TN · Route de Gabès Km 6, Sfax · +(216) 98 241 790 · info@emmtn.com",
     W / 2, PAGE_H - 6, { align: "center" });
 
@@ -309,25 +309,25 @@ function buildBLHtml(order: SalesOrder): string {
   const timbre      = 1;
   const totalTTC    = r(totalNetHT + tvaAmt + timbre);
 
-  const MIN_ROWS = 16;
+  const MIN_ROWS = 10;
   const dataRows = processedLines.map(({ line, qty, unitPrice, disc, montantHT }, idx) => `
     <tr style="background:${idx % 2 === 0 ? "#fff" : "#f8fafc"}">
-      <td style="padding:7px 10px;font-size:11px;color:#64748b;border-right:1px solid #e2e8f0">${(line.productId as any)?.sku || "—"}</td>
-      <td style="padding:7px 10px;font-size:12px;border-right:1px solid #e2e8f0">${(line.productId as any)?.name || "—"}</td>
-      <td style="padding:7px 10px;text-align:center;font-size:12px;font-weight:600;border-right:1px solid #e2e8f0">${qty}</td>
-      <td style="padding:7px 10px;text-align:right;font-size:12px;border-right:1px solid #e2e8f0">${unitPrice.toFixed(3)}</td>
-      <td style="padding:7px 10px;text-align:center;font-size:12px;color:#64748b;border-right:1px solid #e2e8f0">${disc > 0 ? disc + "%" : "—"}</td>
+      <td style="padding:7px 10px;font-size:11px;color:#000000;border:1px solid #000000">${(line.productId as any)?.sku || "—"}</td>
+      <td style="padding:7px 10px;font-size:12px;border:1px solid #000000">${(line.productId as any)?.name || "—"}</td>
+      <td style="padding:7px 10px;text-align:center;font-size:12px;font-weight:600;border:1px solid #000000">${qty}</td>
+      <td style="padding:7px 10px;text-align:right;font-size:12px;border:1px solid #000000">${unitPrice.toFixed(3)}</td>
+      <td style="padding:7px 10px;text-align:center;font-size:12px;color:#000000;border:1px solid #000000">${disc > 0 ? disc + "%" : "—"}</td>
       <td style="padding:7px 10px;text-align:right;font-size:12px;font-weight:600">${montantHT.toFixed(3)}</td>
     </tr>`).join("");
 
   const emptyRowsCount = Math.max(0, MIN_ROWS - processedLines.length);
   const emptyRows = Array.from({ length: emptyRowsCount }).map((_, idx) => `
     <tr style="height:28px;background:${(processedLines.length + idx) % 2 === 0 ? "#fff" : "#f8fafc"}">
-      <td style="border-right:1px solid #e2e8f0"></td>
-      <td style="border-right:1px solid #e2e8f0"></td>
-      <td style="border-right:1px solid #e2e8f0"></td>
-      <td style="border-right:1px solid #e2e8f0"></td>
-      <td style="border-right:1px solid #e2e8f0"></td>
+      <td style="border:1px solid #000000"></td>
+      <td style="border:1px solid #000000"></td>
+      <td style="border:1px solid #000000"></td>
+      <td style="border:1px solid #000000"></td>
+      <td style="border:1px solid #000000"></td>
       <td></td>
     </tr>`).join("");
 
@@ -341,11 +341,11 @@ function buildBLHtml(order: SalesOrder): string {
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: Arial, sans-serif; font-size: 13px; color: #0f172a; background: #fff; }
-    @page { size: A4; margin: 18mm 15mm; }
+    @page { size: A4; margin: 12mm 14mm; }
     @media print { body { padding: 0; } }
-    .page { max-width: 794px; margin: 0 auto; padding: 24px 28px; display:flex; flex-direction:column; min-height:261mm; }
+    .page { max-width: 794px; margin: 0 auto; padding: 0; display:flex; flex-direction:column; min-height:255mm; }
     table { border-collapse: collapse; width: 100%; }
-    th { font-weight: 600; }
+    th { font-weight: 600; border: 1px solid #000000; }
   </style>
 </head>
 <body>
@@ -356,23 +356,23 @@ function buildBLHtml(order: SalesOrder): string {
     <tr>
       <td style="vertical-align:top;width:55%">
         <img src="${window.location.origin}/logo.png" alt="${companyName}" style="height:60px;max-width:180px;object-fit:contain;display:block;margin-bottom:8px"/>
-        <div style="font-size:11px;color:#64748b;margin-top:3px">${companyAddress}</div>
-        <div style="font-size:11px;color:#64748b;margin-top:1px">Tél : ${companyPhone} &nbsp;·&nbsp; ${companyEmail}</div>
+        <div style="font-size:11px;color:#000000;margin-top:3px">${companyAddress}</div>
+        <div style="font-size:11px;color:#000000;margin-top:1px">Tél : ${companyPhone} &nbsp;·&nbsp; ${companyEmail}</div>
       </td>
       <td style="vertical-align:top;text-align:right;width:45%">
         <div style="font-size:26px;font-weight:700;letter-spacing:-1px;color:#0f172a">BON DE LIVRAISON</div>
-        <div style="font-size:15px;font-weight:600;color:#334155;margin-top:2px">${order.orderNo}</div>
+        <div style="font-size:15px;font-weight:600;color:#000000;margin-top:2px">${order.orderNo}</div>
         <table style="margin-top:10px;margin-left:auto;width:auto">
           <tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Date :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Date :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0">${issueDate}</td>
           </tr>
           <tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Client :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Client :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0">${order.customerName}</td>
           </tr>
           <tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Statut :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Statut :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0">${order.status}</td>
           </tr>
         </table>
@@ -384,31 +384,31 @@ function buildBLHtml(order: SalesOrder): string {
   <table style="margin-bottom:16px">
     <tr>
       <td style="width:48%;vertical-align:top;border:1px solid #e2e8f0;border-radius:6px;padding:10px 14px">
-        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#64748b;font-weight:600;margin-bottom:6px">Émetteur</div>
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#000000;font-weight:600;margin-bottom:6px">Émetteur</div>
         <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px">
           <img src="${window.location.origin}/logo.png" alt="${companyName}" style="height:22px;object-fit:contain"/>
           ${companyName}
         </div>
-        <div style="font-size:11px;color:#64748b;margin-top:3px">${companyAddress}</div>
+        <div style="font-size:11px;color:#000000;margin-top:3px">${companyAddress}</div>
       </td>
       <td style="width:4%"></td>
       <td style="width:48%;vertical-align:top;border:1px solid #e2e8f0;border-radius:6px;padding:10px 14px">
-        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#64748b;font-weight:600;margin-bottom:6px">Client / Destinataire</div>
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#000000;font-weight:600;margin-bottom:6px">Client / Destinataire</div>
         <div style="font-size:13px;font-weight:700">${order.customerName}</div>
       </td>
     </tr>
   </table>
 
   <!-- PRODUCT TABLE -->
-  <table style="border:1px solid #e2e8f0;border-radius:6px;overflow:hidden;margin-bottom:0">
+  <table style="border:1px solid #000000;border-radius:6px;overflow:hidden;margin-bottom:0">
     <thead>
-      <tr style="background:#0f172a;color:#fff">
-        <th style="padding:9px 10px;text-align:left;font-size:11px;width:90px;border-right:1px solid rgba(255,255,255,0.15)">Référence</th>
-        <th style="padding:9px 10px;text-align:left;font-size:11px;border-right:1px solid rgba(255,255,255,0.15)">Désignation</th>
-        <th style="padding:9px 10px;text-align:center;font-size:11px;width:50px;border-right:1px solid rgba(255,255,255,0.15)">Qté</th>
-        <th style="padding:9px 10px;text-align:right;font-size:11px;width:90px;border-right:1px solid rgba(255,255,255,0.15)">Prix HT (TND)</th>
-        <th style="padding:9px 10px;text-align:center;font-size:11px;width:60px;border-right:1px solid rgba(255,255,255,0.15)">Remise</th>
-        <th style="padding:9px 10px;text-align:right;font-size:11px;width:100px">Montant HT (TND)</th>
+      <tr style="background:#ffffff;color:#000000">
+        <th style="padding:9px 10px;text-align:left;font-size:11px;width:90px;border:1px solid #000000">Référence</th>
+        <th style="padding:9px 10px;text-align:left;font-size:11px;border:1px solid #000000">Désignation</th>
+        <th style="padding:9px 10px;text-align:center;font-size:11px;width:50px;border:1px solid #000000">Qté</th>
+        <th style="padding:9px 10px;text-align:right;font-size:11px;width:90px;border:1px solid #000000">Prix HT (TND)</th>
+        <th style="padding:9px 10px;text-align:center;font-size:11px;width:60px;border:1px solid #000000">Remise</th>
+        <th style="padding:9px 10px;text-align:right;font-size:11px;width:100px;border:1px solid #000000">Montant HT (TND)</th>
       </tr>
     </thead>
     <tbody>${rows}</tbody>
@@ -421,43 +421,43 @@ function buildBLHtml(order: SalesOrder): string {
   <div style="display:flex;justify-content:flex-end;margin-top:16px;margin-bottom:16px">
     <table style="width:260px;border:1px solid #e2e8f0;border-radius:6px;overflow:hidden;border-collapse:collapse">
       <tr style="background:#f8fafc">
-        <td style="padding:6px 12px;font-size:12px;color:#64748b;border-bottom:1px solid #e2e8f0">Total HT</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000;border-bottom:1px solid #e2e8f0">Total HT</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px;font-weight:600;border-bottom:1px solid #e2e8f0">${totalBrutHT.toFixed(3)} TND</td>
       </tr>
       ${totalRemise > 0 ? `<tr>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b;border-bottom:1px solid #e2e8f0">Remise</td>
-        <td style="padding:6px 12px;text-align:right;font-size:12px;border-bottom:1px solid #e2e8f0">- ${totalRemise.toFixed(3)} TND</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000;border-bottom:1px solid #e2e8f0">Remise</td>
+        <td style="padding:6px 12px;text-align:right;font-size:12px;border-bottom:1px solid #e2e8f0">${totalRemise.toFixed(3)} TND</td>
       </tr>` : ""}
       <tr style="background:#f8fafc">
         <td style="padding:6px 12px;font-size:12px;font-weight:600;color:#0f172a;border-bottom:1px solid #e2e8f0">Total Net HT</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px;font-weight:600;border-bottom:1px solid #e2e8f0">${totalNetHT.toFixed(3)} TND</td>
       </tr>
       <tr>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b;border-bottom:1px solid #e2e8f0">TVA (${tvaRate}%)</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000;border-bottom:1px solid #e2e8f0">TVA (${tvaRate}%)</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px;border-bottom:1px solid #e2e8f0">${tvaAmt.toFixed(3)} TND</td>
       </tr>
       <tr>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b;border-bottom:1px solid #e2e8f0">Timbre fiscal</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000;border-bottom:1px solid #e2e8f0">Timbre fiscal</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px;border-bottom:1px solid #e2e8f0">${timbre.toFixed(3)} TND</td>
       </tr>
-      <tr style="background:#0f172a">
-        <td style="padding:9px 12px;font-size:13px;font-weight:700;color:#fff">TOTAL TTC</td>
-        <td style="padding:9px 12px;text-align:right;font-size:13px;font-weight:700;color:#fff">${totalTTC.toFixed(3)} TND</td>
+      <tr style="background:#ffffff;border-top:2px solid #000000">
+        <td style="padding:9px 12px;font-size:13px;font-weight:700;color:#000000">TOTAL TTC</td>
+        <td style="padding:9px 12px;text-align:right;font-size:13px;font-weight:700;color:#000000">${totalTTC.toFixed(3)} TND</td>
       </tr>
     </table>
   </div>
 
   <!-- SIGNATURE -->
-  <div style="display:flex;justify-content:flex-end;margin-top:10px">
-    <div style="width:260px;text-align:center">
-      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#64748b;margin-bottom:8px">Signature</div>
-      <div style="height:52px;border:1px dashed #cbd5e1;border-radius:4px"></div>
-      <div style="font-size:9px;color:#94a3b8;margin-top:6px">Signature &amp; Cachet</div>
+  <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+    <div style="width:45%">
+      <div style="font-size:10px;color:#000000;margin-bottom:4px">Cachet &amp; Signature</div>
+      <div style="border:1px solid #000000;border-radius:6px;height:70px"></div>
+      
     </div>
   </div>
 
   <!-- FOOTER -->
-  <div style="margin-top:20px;border-top:1px solid #e2e8f0;padding-top:10px;text-align:center;font-size:9px;color:#94a3b8">
+  <div style="margin-top:20px;border-top:1px solid #e2e8f0;padding-top:10px;text-align:center;font-size:9px;color:#000000">
     ${companyName} · ${companyAddress} · ${companyPhone} · ${companyEmail}
   </div>
 

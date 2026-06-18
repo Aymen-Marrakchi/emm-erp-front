@@ -68,7 +68,7 @@ async function exportToPDF(
   doc.text(title, pageW / 2, 13, { align: "center" });
 
   // Subtitle centered below
-  doc.setFontSize(7.5); doc.setFont("helvetica", "normal"); doc.setTextColor(156, 163, 175);
+  doc.setFontSize(7.5); doc.setFont("helvetica", "normal"); doc.setTextColor(0, 0, 0);
   doc.text(`${subtitle.toUpperCase()}  ·  GENERATED ${todayStr()}`, pageW / 2, 20, { align: "center" });
 
   // Red accent line
@@ -91,7 +91,7 @@ async function exportToPDF(
   });
 
   const finalY = (doc as any).lastAutoTable?.finalY ?? 140;
-  doc.setFontSize(7); doc.setFont("helvetica", "normal"); doc.setTextColor(55, 65, 81);
+  doc.setFontSize(7); doc.setFont("helvetica", "normal"); doc.setTextColor(0, 0, 0);
   doc.text(
     `Confidential — EMM Hardware ERP · ${new Date().toISOString()}`,
     pageW / 2, finalY + 10, { align: "center" }

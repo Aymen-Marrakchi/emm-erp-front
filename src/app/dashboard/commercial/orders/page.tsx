@@ -5,7 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { salesOrderService } from "@/services/commercial/salesOrderService";
 import { stockProductService } from "@/services/stock/stockProductService";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import {
   ShoppingCart,
@@ -19,6 +19,8 @@ import {
   Truck,
   Package,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Clock,
   ExternalLink,
   RotateCcw,
@@ -228,10 +230,16 @@ export default function CommercialOrdersPage() {
   const [actionId, setActionId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const [appliedSearch, setAppliedSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const fetchRetryCountRef = useRef(0);
+
+  // Server-side pagination
+  const PAGE_SIZE = 20;
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [kpis, setKpis] = useState({ total: 0, draft: 0, confirmed: 0, prepared: 0, late: 0 });
 
   const [form, setForm] = useState({
     customerId: "",
@@ -251,90 +259,102 @@ export default function CommercialOrdersPage() {
     });
   }, [lines]);
 
-  useEffect(() => {
-    fetchAll();
-    return () => {
-      if (retryTimeoutRef.current) {
-        clearTimeout(retryTimeoutRef.current);
-      }
-    };
+  // Supporting data (products for the form, badges for backorders/returns,
+  // customers for the dropdown) — loaded once, independent of the orders page.
+  const fetchSupporting = useCallback(async () => {
+    const [productResult, backorderResult, customerResult, rmaResult] = await Promise.allSettled([
+      stockProductService.getAll(),
+      backorderService.getAll(),
+      customerService.getActive(),
+      rmaService.getAll(),
+    ]);
+
+    const productData =
+      productResult.status === "fulfilled" && Array.isArray(productResult.value)
+        ? productResult.value
+        : [];
+    const backorderData =
+      backorderResult.status === "fulfilled" && Array.isArray(backorderResult.value)
+        ? backorderResult.value
+        : [];
+    const customerData =
+      customerResult.status === "fulfilled" && Array.isArray(customerResult.value)
+        ? customerResult.value
+        : [];
+    const rmaData =
+      rmaResult.status === "fulfilled" && Array.isArray(rmaResult.value)
+        ? rmaResult.value
+        : [];
+
+    setProducts(
+      productData.filter((p: Product) => p.status === "ACTIVE" && p.type === "PRODUIT_FINI")
+    );
+    setBackorderedIds(
+      new Set(
+        backorderData
+          .filter((b) => b?.status === "PENDING")
+          .map((b) => String(b.salesOrderId?._id || b.salesOrderId))
+      )
+    );
+    setCustomers(customerData);
+    setClosedReturnOrderIds(
+      new Set(
+        Array.from(
+          rmaData.reduce<Map<string, string[]>>((map, rma) => {
+            const orderId = String(rma.salesOrderId?._id || "");
+            if (!orderId) return map;
+            const existing = map.get(orderId) || [];
+            existing.push(rma.status);
+            map.set(orderId, existing);
+            return map;
+          }, new Map())
+        )
+          .filter(([, statuses]) => statuses.length > 0 && statuses.every((status) => status === "CLOSED"))
+          .map(([orderId]) => orderId)
+      )
+    );
   }, []);
 
-  const fetchAll = async () => {
+  // Paginated orders + KPI counts (server-side).
+  const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
-      const [productResult, orderResult, backorderResult, customerResult, rmaResult] = await Promise.allSettled([
-        stockProductService.getAll(),
-        salesOrderService.getAll(),
-        backorderService.getAll(),
-        customerService.getActive(),
-        rmaService.getAll(),
-      ]);
-
-      if (orderResult.status !== "fulfilled") {
-        throw orderResult.reason;
-      }
-
-      const productData =
-        productResult.status === "fulfilled" && Array.isArray(productResult.value)
-          ? productResult.value
-          : [];
-      const backorderData =
-        backorderResult.status === "fulfilled" && Array.isArray(backorderResult.value)
-          ? backorderResult.value
-          : [];
-      const customerData =
-        customerResult.status === "fulfilled" && Array.isArray(customerResult.value)
-          ? customerResult.value
-          : [];
-      const rmaData =
-        rmaResult.status === "fulfilled" && Array.isArray(rmaResult.value)
-          ? rmaResult.value
-          : [];
-      const orderData = Array.isArray(orderResult.value) ? orderResult.value : [];
-
-      setProducts(
-        productData.filter((p: Product) => p.status === "ACTIVE" && p.type === "PRODUIT_FINI")
-      );
-      setOrders(orderData);
-      setBackorderedIds(
-        new Set(
-          backorderData
-            .filter((b) => b?.status === "PENDING")
-            .map((b) => String(b.salesOrderId?._id || b.salesOrderId))
-        )
-      );
-      setCustomers(customerData);
-      setClosedReturnOrderIds(
-        new Set(
-          Array.from(
-            rmaData.reduce<Map<string, string[]>>((map, rma) => {
-              const orderId = String(rma.salesOrderId?._id || "");
-              if (!orderId) return map;
-              const existing = map.get(orderId) || [];
-              existing.push(rma.status);
-              map.set(orderId, existing);
-              return map;
-            }, new Map())
-          )
-            .filter(([, statuses]) => statuses.length > 0 && statuses.every((status) => status === "CLOSED"))
-            .map(([orderId]) => orderId)
-        )
-      );
-      fetchRetryCountRef.current = 0;
+      const res = await salesOrderService.getPaginated({
+        page,
+        limit: PAGE_SIZE,
+        search: appliedSearch,
+        status: statusFilter,
+      });
+      setOrders(Array.isArray(res.items) ? (res.items as unknown as Order[]) : []);
+      setTotalPages(res.totalPages || 1);
+      setTotalOrders(res.total || 0);
+      if (res.kpis) setKpis(res.kpis);
     } catch (error: unknown) {
       setError(getErrorMessage(error, "Failed to load orders"));
-      if (fetchRetryCountRef.current < 2) {
-        fetchRetryCountRef.current += 1;
-        retryTimeoutRef.current = setTimeout(() => {
-          fetchAll();
-        }, 1200);
-      }
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, appliedSearch, statusFilter]);
+
+  const refreshAll = useCallback(async () => {
+    await Promise.all([fetchSupporting(), fetchOrders()]);
+  }, [fetchSupporting, fetchOrders]);
+
+  // Load supporting data once on mount.
+  useEffect(() => { void fetchSupporting(); }, [fetchSupporting]);
+
+  // Reload orders whenever the page, debounced search, or status filter changes.
+  useEffect(() => { void fetchOrders(); }, [fetchOrders]);
+
+  // Debounce the search box and reset to page 1 when the query changes.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAppliedSearch(search);
+      setPage(1);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [search]);
 
   const updateLine = (index: number, key: keyof OrderLine, value: string) => {
     setLines((prev) => prev.map((line, i) => (i === index ? { ...line, [key]: value } : line)));
@@ -379,7 +399,7 @@ export default function CommercialOrdersPage() {
       });
       setLines([{ ...EMPTY_ORDER_LINE }]);
       setShowForm(false);
-      await fetchAll();
+      await refreshAll();
     } catch (error: unknown) {
       setError(getErrorMessage(error, "Failed to create order"));
     } finally {
@@ -404,7 +424,7 @@ export default function CommercialOrdersPage() {
       if (action === "markUrgent") await salesOrderService.markUrgent(id, true);
       if (action === "unmarkUrgent") await salesOrderService.markUrgent(id, false);
 
-      await fetchAll();
+      await refreshAll();
     } catch (error: unknown) {
       setError(getErrorMessage(error, `Failed to ${action} order`));
     } finally {
@@ -415,28 +435,8 @@ export default function CommercialOrdersPage() {
   const orderTotal = (order: Order) =>
     order.lines.reduce((sum, l) => sum + lineAmount(l), 0);
 
-  const filtered = useMemo(() => {
-    const q = search.toLowerCase();
-    return orders.filter((o) => {
-      const matchSearch =
-        o.orderNo.toLowerCase().includes(q) ||
-        o.customerName.toLowerCase().includes(q);
-      const matchStatus =
-        statusFilter === "ALL" ||
-        (statusFilter === "LATE" ? isLate(o) : o.status === statusFilter);
-      return matchSearch && matchStatus;
-    });
-  }, [orders, search, statusFilter]);
-
-  // KPI counts
-  const kpis = useMemo(() => ({
-    total: orders.length,
-    draft: orders.filter((o) => o.status === "DRAFT").length,
-    confirmed: orders.filter((o) => o.status === "CONFIRMED").length,
-    prepared: orders.filter((o) => o.status === "PREPARED").length,
-    shipped: orders.filter((o) => o.status === "SHIPPED").length,
-    late: orders.filter(isLate).length,
-  }), [orders]);
+  // Orders are filtered/paginated server-side; render them directly.
+  const filtered = orders;
 
   return (
     <ProtectedRoute allowedRoles={["ADMIN", "COMMERCIAL_MANAGER"]}>
@@ -736,7 +736,7 @@ export default function CommercialOrdersPage() {
           <div className="flex flex-col gap-3 border-b border-slate-200 px-6 py-4 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="font-semibold text-slate-950 dark:text-white">
               {t("allOrdersList")}
-              <span className="ml-2 text-sm font-normal text-slate-400">{filtered.length}</span>
+              <span className="ml-2 text-sm font-normal text-slate-400">{totalOrders}</span>
             </h2>
             <div className="flex items-center gap-2">
               <div className="relative">
@@ -750,7 +750,7 @@ export default function CommercialOrdersPage() {
               </div>
               <select
                 value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
+                onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
                 className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700 outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300"
               >
                 <option value="ALL">{t("allStatus")}</option>
@@ -1081,6 +1081,31 @@ export default function CommercialOrdersPage() {
                   </div>
                 );
               })}
+            </div>
+          )}
+
+          {/* ── Pagination ── */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between gap-3 border-t border-slate-200 px-6 py-4 dark:border-slate-800">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Page {page} / {totalPages} · {totalOrders} {t("totalOrdersKpi") || "orders"}
+              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page <= 1 || loading}
+                  className="inline-flex items-center gap-1 rounded-2xl border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800"
+                >
+                  <ChevronLeft size={14} /> Précédent
+                </button>
+                <button
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page >= totalPages || loading}
+                  className="inline-flex items-center gap-1 rounded-2xl border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800"
+                >
+                  Suivant <ChevronRight size={14} />
+                </button>
+              </div>
             </div>
           )}
         </div>

@@ -107,7 +107,6 @@ function PrintDocument({
   const emptyRowsCount = Math.max(0, MIN_ROWS - processedLines.length);
 
   const logoSrc = typeof window !== "undefined" ? `${window.location.origin}/logo.png` : "/logo.png";
-
   return (
     <div id="bc-print-area" style={{ fontFamily: "Arial, sans-serif", fontSize: 13, color: "#0f172a", background: "#fff", maxWidth: 794, margin: "0 auto", padding: "24px 28px", display: "flex", flexDirection: "column", minHeight: "261mm" }}>
 

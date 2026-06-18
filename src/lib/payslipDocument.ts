@@ -274,7 +274,7 @@ export async function generatePayslip(opts: {
   // ── Footer ──
   doc.setFont("helvetica", "italic");
   doc.setFontSize(7.5);
-  doc.setTextColor(140, 140, 140);
+  doc.setTextColor(0, 0, 0);
   doc.text(L.footer, W / 2, 286, { align: "center" });
 
   const safeName = (emp.name || "employee").replace(/\s+/g, "_");

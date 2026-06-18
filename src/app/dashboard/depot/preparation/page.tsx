@@ -119,12 +119,12 @@ function openPreparationDocument(order: SalesOrder, settings: CompanySettings | 
     const lineHt = qty * (line.unitPrice || 0) * (1 - ((line.discount || 0) / 100));
     return `
     <tr style="background:${idx % 2 === 0 ? "#fff" : "#f8fafc"}">
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:center;color:#64748b;font-size:12px">${idx + 1}</td>
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;font-size:11px;color:#64748b">${line.productId?.sku || "—"}</td>
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;font-size:13px">${line.productId?.name || "—"}</td>
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:center;font-size:13px">${qty}</td>
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:right;font-size:13px">${(line.unitPrice || 0).toFixed(3)}</td>
-      <td style="border:1px solid #e2e8f0;padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${lineHt.toFixed(3)}</td>
+      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;color:#000000;font-size:12px">${idx + 1}</td>
+      <td style="border:1px solid #000000;padding:7px 10px;font-size:11px;color:#000000">${line.productId?.sku || "—"}</td>
+      <td style="border:1px solid #000000;padding:7px 10px;font-size:13px">${line.productId?.name || "—"}</td>
+      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;font-size:13px">${qty}</td>
+      <td style="border:1px solid #000000;padding:7px 10px;text-align:right;font-size:13px">${(line.unitPrice || 0).toFixed(3)}</td>
+      <td style="border:1px solid #000000;padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${lineHt.toFixed(3)}</td>
     </tr>`;
   }).join("");
 
@@ -136,11 +136,11 @@ function openPreparationDocument(order: SalesOrder, settings: CompanySettings | 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: Arial, sans-serif; font-size: 13px; color: #0f172a; background: #fff; }
-    @page { size: A4; margin: 18mm 15mm; }
+    @page { size: A4; margin: 12mm 14mm; }
     @media print { body { padding: 0; } }
-    .page { max-width: 794px; margin: 0 auto; padding: 24px 28px; display:flex; flex-direction:column; min-height:261mm; }
+    .page { max-width: 794px; margin: 0 auto; padding: 0; display:flex; flex-direction:column; min-height:255mm; }
     table { border-collapse: collapse; width: 100%; }
-    th { font-weight: 600; }
+    th { font-weight: 600; border: 1px solid #000000; }
   </style>
 </head>
 <body>
@@ -151,25 +151,25 @@ function openPreparationDocument(order: SalesOrder, settings: CompanySettings | 
     <tr>
       <td style="vertical-align:top;width:55%">
         <img src="${window.location.origin}/logo.png" alt="${companyName}" style="height:60px;max-width:180px;object-fit:contain;display:block;margin-bottom:8px"/>
-        <div style="font-size:11px;color:#64748b;margin-top:3px">${companyAddress}</div>
-        <div style="font-size:11px;color:#64748b;margin-top:1px">Tél : ${companyPhone} &nbsp;·&nbsp; ${companyEmail}</div>
-        ${companyMf || companyRne ? `<div style="font-size:11px;color:#64748b;margin-top:4px">${companyMf ? `<strong>MF :</strong> ${companyMf}` : ""}${companyMf && companyRne ? " &nbsp;|&nbsp; " : ""}${companyRne ? `<strong>RNE :</strong> ${companyRne}` : ""}</div>` : ""}
-        ${companyRib ? `<div style="font-size:11px;color:#64748b;margin-top:1px"><strong>RIB :</strong> ${companyRib}${companyBank ? ` &nbsp;(${companyBank}${companyAgence ? " — " + companyAgence : ""})` : ""}</div>` : ""}
+        <div style="font-size:11px;color:#000000;margin-top:3px">${companyAddress}</div>
+        <div style="font-size:11px;color:#000000;margin-top:1px">Tél : ${companyPhone} &nbsp;·&nbsp; ${companyEmail}</div>
+        ${companyMf || companyRne ? `<div style="font-size:11px;color:#000000;margin-top:4px">${companyMf ? `<strong>MF :</strong> ${companyMf}` : ""}${companyMf && companyRne ? " &nbsp;|&nbsp; " : ""}${companyRne ? `<strong>RNE :</strong> ${companyRne}` : ""}</div>` : ""}
+        ${companyRib ? `<div style="font-size:11px;color:#000000;margin-top:1px"><strong>RIB :</strong> ${companyRib}${companyBank ? ` &nbsp;(${companyBank}${companyAgence ? " — " + companyAgence : ""})` : ""}</div>` : ""}
       </td>
       <td style="vertical-align:top;text-align:right;width:45%">
         <div style="font-size:26px;font-weight:700;letter-spacing:-1px;color:#0f172a">BON DE PRÉPARATION</div>
-        <div style="font-size:15px;font-weight:600;color:#334155;margin-top:2px">${order.orderNo}</div>
+        <div style="font-size:15px;font-weight:600;color:#000000;margin-top:2px">${order.orderNo}</div>
         <table style="margin-top:10px;margin-left:auto;width:auto">
           <tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Date :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Date :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0">${issueDate}</td>
           </tr>
           <tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Date promise :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Date promise :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0">${promisedDate}</td>
           </tr>
           <tr>
-            <td style="font-size:11px;color:#64748b;padding:2px 8px 2px 0;text-align:right">Statut :</td>
+            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Statut :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0">${order.status}</td>
           </tr>
         </table>
@@ -181,28 +181,28 @@ function openPreparationDocument(order: SalesOrder, settings: CompanySettings | 
   <table style="margin-bottom:16px">
     <tr>
       <td style="width:48%;vertical-align:top;border:1px solid #e2e8f0;border-radius:6px;padding:10px 14px">
-        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#64748b;font-weight:600;margin-bottom:6px">Émetteur</div>
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#000000;font-weight:600;margin-bottom:6px">Émetteur</div>
         <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px">
           <img src="${window.location.origin}/logo.png" alt="${companyName}" style="height:22px;object-fit:contain"/>
           ${companyName}
         </div>
-        <div style="font-size:11px;color:#64748b;margin-top:3px">${companyAddress}</div>
-        ${companyMf ? `<div style="font-size:11px;color:#64748b;margin-top:1px">MF : ${companyMf}</div>` : ""}
+        <div style="font-size:11px;color:#000000;margin-top:3px">${companyAddress}</div>
+        ${companyMf ? `<div style="font-size:11px;color:#000000;margin-top:1px">MF : ${companyMf}</div>` : ""}
       </td>
       <td style="width:4%"></td>
       <td style="width:48%;vertical-align:top;border:1px solid #e2e8f0;border-radius:6px;padding:10px 14px">
-        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#64748b;font-weight:600;margin-bottom:6px">Client / Destinataire</div>
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:#000000;font-weight:600;margin-bottom:6px">Client / Destinataire</div>
         <div style="font-size:13px;font-weight:700">${order.customerName}</div>
-        ${customerAddress ? `<div style="font-size:11px;color:#64748b;margin-top:3px">Adresse : ${customerAddress}</div>` : ""}
-        ${customerMf ? `<div style="font-size:11px;color:#64748b;margin-top:1px">MF : ${customerMf}</div>` : ""}
+        ${customerAddress ? `<div style="font-size:11px;color:#000000;margin-top:3px">Adresse : ${customerAddress}</div>` : ""}
+        ${customerMf ? `<div style="font-size:11px;color:#000000;margin-top:1px">MF : ${customerMf}</div>` : ""}
       </td>
     </tr>
   </table>
 
   <!-- ═══ PRODUCT TABLE ═══ -->
-  <table style="margin-bottom:0;border:1px solid #e2e8f0;border-radius:6px;overflow:hidden">
+  <table style="margin-bottom:0;border:1px solid #000000;border-radius:6px;overflow:hidden">
     <thead>
-      <tr style="background:#0f172a;color:#fff">
+      <tr style="background:#ffffff;color:#000000">
         <th style="padding:9px 10px;text-align:center;font-size:11px;width:32px">N°</th>
         <th style="padding:9px 10px;text-align:left;font-size:11px;width:70px">Réf.</th>
         <th style="padding:9px 10px;text-align:left;font-size:11px">Désignation</th>
@@ -221,56 +221,40 @@ function openPreparationDocument(order: SalesOrder, settings: CompanySettings | 
   <div style="display:flex;justify-content:flex-end;margin-top:16px;margin-bottom:16px">
     <table style="width:280px;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 6px 6px;overflow:hidden">
       <tr style="background:#f8fafc">
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">Total brut HT</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000">Total brut HT</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px;font-weight:600">${subtotalHt.toFixed(3)} TND</td>
       </tr>
       <tr>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">FODEC (1%)</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000">FODEC (1%)</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px">${totalFodec.toFixed(3)} TND</td>
       </tr>
       <tr>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">TVA (19%)</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000">TVA (19%)</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px">${totalVat.toFixed(3)} TND</td>
       </tr>
       <tr style="background:#f8fafc">
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">Avant timbre</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000">Avant timbre</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px">${totalBeforeStamp.toFixed(3)} TND</td>
       </tr>
       <tr>
-        <td style="padding:6px 12px;font-size:12px;color:#64748b">Timbre fiscal</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000">Timbre fiscal</td>
         <td style="padding:6px 12px;text-align:right;font-size:12px">${TIMBRE.toFixed(3)} TND</td>
       </tr>
-      <tr style="background:#0f172a">
-        <td style="padding:9px 12px;font-size:13px;font-weight:700;color:#fff">TOTAL TTC</td>
-        <td style="padding:9px 12px;text-align:right;font-size:13px;font-weight:700;color:#fff">${totalTtc.toFixed(3)} TND</td>
+      <tr style="background:#ffffff;border-top:2px solid #000000">
+        <td style="padding:9px 12px;font-size:13px;font-weight:700;color:#000000">TOTAL TTC</td>
+        <td style="padding:9px 12px;text-align:right;font-size:13px;font-weight:700;color:#000000">${totalTtc.toFixed(3)} TND</td>
       </tr>
     </table>
   </div>
 
   <!-- ═══ MONTANT EN LETTRES ═══ -->
   <div style="border:1px solid #e2e8f0;border-radius:6px;padding:10px 14px;margin-bottom:16px;background:#f8fafc">
-    <span style="font-size:11px;color:#64748b">Arrêté le présent bon à la somme de : </span>
+    <span style="font-size:11px;color:#000000">Arrêté le présent bon à la somme de : </span>
     <strong style="font-size:12px">${montantEnLettres(totalTtc)}</strong>
   </div>
 
   <!-- ═══ FOOTER ═══ -->
-  <div style="border-top:1px solid #e2e8f0;padding-top:12px;display:flex;justify-content:space-between;align-items:flex-start">
-    <div style="font-size:10px;color:#64748b;max-width:55%">
-      <strong style="color:#0f172a">Signatures</strong><br/>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:10px">
-        <div style="border-top:1px solid #334155;padding-top:6px">Préparé par</div>
-        <div style="border-top:1px solid #334155;padding-top:6px">Validé par</div>
-      </div>
-    </div>
-    <div style="font-size:10px;color:#64748b;text-align:right">
-      <strong style="color:#0f172a">Coordonnées bancaires</strong><br/>
-      ${companyRib  ? `RIB : ${companyRib}<br/>`  : ""}
-      ${companyIban ? `IBAN : ${companyIban}<br/>` : ""}
-      ${companyBank ? `Banque : ${companyBank}${companyAgence ? " · Agence : " + companyAgence : ""}` : ""}
-    </div>
-  </div>
-
-  <div style="margin-top:14px;text-align:center;font-size:9px;color:#94a3b8;border-top:1px solid #f1f5f9;padding-top:10px">
+  <div style="margin-top:14px;text-align:center;font-size:9px;color:#000000;border-top:1px solid #f1f5f9;padding-top:10px">
     ${companyName}${companyMf ? " · MF : " + companyMf : ""}${companyRne ? " · RNE : " + companyRne : ""} · ${companyAddress} · ${companyPhone} · ${companyEmail}
   </div>
 
