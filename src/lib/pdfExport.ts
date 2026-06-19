@@ -596,12 +596,12 @@ export function openFournisseurDocument(opts: FournisseurDocumentOptions): void 
   // Product table: single summary row when no line items
   const productRow = `
     <tr>
-      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;color:#000000;font-size:12px">1</td>
-      <td style="border:1px solid #000000;padding:7px 10px;font-size:11px;color:#000000">${opts.supplierRef || opts.invoiceNo}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;font-size:13px">Facture fournisseur — ${opts.supplierName}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;font-size:13px">1</td>
-      <td style="border:1px solid #000000;padding:7px 10px;text-align:right;font-size:13px">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
+      <td style="padding:7px 10px;text-align:center;color:#000000;font-size:12px">1</td>
+      <td style="padding:7px 10px;font-size:11px;color:#000000">${opts.supplierRef || opts.invoiceNo}</td>
+      <td style="padding:7px 10px;font-size:13px">Facture fournisseur — ${opts.supplierName}</td>
+      <td style="padding:7px 10px;text-align:center;font-size:13px">1</td>
+      <td style="padding:7px 10px;text-align:right;font-size:13px">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
+      <td style="padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
     </tr>`;
 
   const html = `<!doctype html>
@@ -680,7 +680,7 @@ export function openFournisseurDocument(opts: FournisseurDocumentOptions): void 
   </table>
 
   <!-- PRODUCT TABLE -->
-  <table style="margin-bottom:0;border:1px solid #000000;border-radius:6px;overflow:hidden">
+  <table style="margin-bottom:0;border:1px solid #000000;border-collapse:collapse">
     <thead>
       <tr style="background:#ffffff;color:#000000">
         <th style="padding:9px 10px;text-align:center;font-size:11px;width:32px">N°</th>
@@ -808,20 +808,20 @@ export function openClientDocument(opts: ClientDocumentOptions): void {
   const productRows = opts.lines && opts.lines.length > 0
     ? opts.lines.map((l, idx) => `
       <tr style="background:${idx % 2 === 0 ? "#fff" : "#f8fafc"}">
-        <td style="border:1px solid #000000;padding:7px 10px;text-align:center;color:#000000;font-size:12px">${idx + 1}</td>
-        <td style="border:1px solid #000000;padding:7px 10px;font-size:11px;color:#000000">${l.ref || "—"}</td>
-        <td style="border:1px solid #000000;padding:7px 10px;font-size:13px">${l.description}</td>
-        <td style="border:1px solid #000000;padding:7px 10px;text-align:center;font-size:13px">${l.qty}</td>
-        <td style="border:1px solid #000000;padding:7px 10px;text-align:right;font-size:13px">${l.unitPrice.toFixed(3)}</td>
-        <td style="border:1px solid #000000;padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${l.totalHt.toFixed(3)}</td>
+        <td style="padding:7px 10px;text-align:center;color:#000000;font-size:12px">${idx + 1}</td>
+        <td style="padding:7px 10px;font-size:11px;color:#000000">${l.ref || "—"}</td>
+        <td style="padding:7px 10px;font-size:13px">${l.description}</td>
+        <td style="padding:7px 10px;text-align:center;font-size:13px">${l.qty}</td>
+        <td style="padding:7px 10px;text-align:right;font-size:13px">${l.unitPrice.toFixed(3)}</td>
+        <td style="padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${l.totalHt.toFixed(3)}</td>
       </tr>`).join("")
     : `<tr>
-        <td style="border:1px solid #000000;padding:7px 10px;text-align:center;color:#000000;font-size:12px">1</td>
-        <td style="border:1px solid #000000;padding:7px 10px;font-size:11px;color:#000000">${opts.invoiceNo}</td>
-        <td style="border:1px solid #000000;padding:7px 10px;font-size:13px">Facture client — ${opts.customerName}</td>
-        <td style="border:1px solid #000000;padding:7px 10px;text-align:center;font-size:13px">1</td>
-        <td style="border:1px solid #000000;padding:7px 10px;text-align:right;font-size:13px">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
-        <td style="border:1px solid #000000;padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
+        <td style="padding:7px 10px;text-align:center;color:#000000;font-size:12px">1</td>
+        <td style="padding:7px 10px;font-size:11px;color:#000000">${opts.invoiceNo}</td>
+        <td style="padding:7px 10px;font-size:13px">Facture client — ${opts.customerName}</td>
+        <td style="padding:7px 10px;text-align:center;font-size:13px">1</td>
+        <td style="padding:7px 10px;text-align:right;font-size:13px">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
+        <td style="padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
       </tr>`;
 
   const taxRows = hasBreakdown
@@ -937,7 +937,7 @@ export function openClientDocument(opts: ClientDocumentOptions): void {
   </table>
 
   <!-- PRODUCT TABLE -->
-  <table style="margin-bottom:0;border:1px solid #000000;border-radius:6px;overflow:hidden">
+  <table style="margin-bottom:0;border:1px solid #000000;border-collapse:collapse">
     <thead>
       <tr style="background:#ffffff;color:#000000">
         <th style="padding:9px 10px;text-align:center;font-size:11px;width:32px">N°</th>
@@ -1179,14 +1179,14 @@ export function openBonReceptionDocument(opts: BonReceptionDocumentOptions): voi
 
   const lineRows = (opts.lines ?? []).map((l, i) => `
     <tr style="background:${i % 2 === 0 ? "#ffffff" : "#f8fafc"}">
-      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;color:#000000;font-size:12px">${i + 1}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;font-size:11px;color:#000000">${l.sku || "—"}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;font-size:13px">${l.name}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;font-size:13px">${l.orderedQty}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;font-size:13px">${l.receivedQty}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;font-size:13px">${l.acceptedQty}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;font-size:12px;color:${QUALITY_COLOR[l.qualityStatus] || "#64748b"};font-weight:600">${QUALITY_LABEL[l.qualityStatus] || l.qualityStatus}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;font-size:11px;color:#000000">${l.lotRef || "—"}</td>
+      <td style="padding:7px 10px;text-align:center;color:#000000;font-size:12px">${i + 1}</td>
+      <td style="padding:7px 10px;font-size:11px;color:#000000">${l.sku || "—"}</td>
+      <td style="padding:7px 10px;font-size:13px">${l.name}</td>
+      <td style="padding:7px 10px;text-align:center;font-size:13px">${l.orderedQty}</td>
+      <td style="padding:7px 10px;text-align:center;font-size:13px">${l.receivedQty}</td>
+      <td style="padding:7px 10px;text-align:center;font-size:13px">${l.acceptedQty}</td>
+      <td style="padding:7px 10px;text-align:center;font-size:12px;color:${QUALITY_COLOR[l.qualityStatus] || "#64748b"};font-weight:600">${QUALITY_LABEL[l.qualityStatus] || l.qualityStatus}</td>
+      <td style="padding:7px 10px;font-size:11px;color:#000000">${l.lotRef || "—"}</td>
     </tr>`).join("");
 
   const html = `<!doctype html>

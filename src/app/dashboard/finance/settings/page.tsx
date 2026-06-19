@@ -12,7 +12,7 @@ const labelClass = "mb-1.5 block text-xs font-semibold uppercase tracking-[0.14e
 
 const empty: CompanySettings = {
   companyName: "", mf: "", rne: "", address: "", phone: "", email: "", rib: "", iban: "", bank: "", agence: "",
-  invoicePrefix: "FC",
+  invoicePrefix: "FC", invoiceNextNumber: 0,
 };
 
 export default function FinanceSettingsPage() {
@@ -96,19 +96,33 @@ export default function FinanceSettingsPage() {
 
             <div className={`${surface} p-6 space-y-5`}>
               <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Numérotation des factures</p>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 {field("invoicePrefix", "Préfixe facture", "FC")}
+                <div>
+                  <label className={labelClass}>Prochain numéro</label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={form.invoiceNextNumber ?? 0}
+                    onChange={(e) =>
+                      setForm({ ...form, invoiceNextNumber: Math.max(0, parseInt(e.target.value, 10) || 0) })
+                    }
+                    className={inputClass}
+                    placeholder="0"
+                  />
+                </div>
                 <div>
                   <label className={labelClass}>Aperçu du numéro</label>
                   <div className={`${inputClass} flex items-center text-slate-500 dark:text-slate-400`}>
-                    {`${(form.invoicePrefix || "FC").toUpperCase().replace(/[^A-Z0-9]/g, "") || "FC"}-0001/${
-                      String(new Date().getDate()).padStart(2, "0")
-                    }${String(new Date().getMonth() + 1).padStart(2, "0")}${new Date().getFullYear()}`}
+                    {`${(form.invoicePrefix || "FC").toUpperCase().replace(/[^A-Z0-9]/g, "") || "FC"}-${
+                      String(form.invoiceNextNumber && form.invoiceNextNumber > 0 ? form.invoiceNextNumber : 1).padStart(4, "0")
+                    }/${String(new Date().getDate()).padStart(2, "0")}${String(new Date().getMonth() + 1).padStart(2, "0")}${new Date().getFullYear()}`}
                   </div>
                 </div>
               </div>
               <p className="text-[11px] text-slate-400 dark:text-slate-500">
-                Modifie uniquement le préfixe des nouvelles factures (ex. « FC »). Les factures déjà créées ne changent pas.
+                Laissez « Prochain numéro » à 0 pour la numérotation automatique. Saisissez un numéro pour forcer la prochaine
+                facture (ex. 20 → FC-0020) ; ensuite le système continue de compter automatiquement. Les factures déjà créées ne changent pas.
               </p>
             </div>
 

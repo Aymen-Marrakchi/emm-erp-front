@@ -121,20 +121,36 @@ function openDevisDocument(devis: Devis, settings: CompanySettings | null) {
     0
   );
 
-  const rows = devis.lines.map((line, idx) => {
-    const brutHt = Number(line.baseUnitHt || 0) * Number(line.quantity || 0);
-    const disc   = Number((line as any).discount || 0);
+  // Padded rows so the table always fills to a min height (like the finance devis)
+  const MIN_ROWS = 10;
+  const dataRows = devis.lines.map((line, idx) => {
+    const qty       = Number(line.quantity || 0);
+    const unitPrice = Number(line.baseUnitHt || 0);
+    const disc      = Number((line as any).discount || 0);
+    const montantHT = Number(line.subtotalHt || 0);
     return `
     <tr style="background:${idx % 2 === 0 ? "#fff" : "#f8fafc"}">
-      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;color:#000000;font-size:12px">${idx + 1}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;font-size:11px;color:#000000">${line.productId?.sku || "—"}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;font-size:13px">${line.productId?.name || "—"}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;font-size:13px">${line.quantity}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;text-align:right;font-size:13px">${line.baseUnitHt.toFixed(3)}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;font-size:12px;color:#000000">${disc > 0 ? `${disc}%` : "—"}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${line.subtotalHt.toFixed(3)}</td>
+      <td style="padding:7px 10px;font-size:11px;color:#000000">${line.productId?.sku || "—"}</td>
+      <td style="padding:7px 10px;font-size:12px">${line.productId?.name || "—"}</td>
+      <td style="padding:7px 10px;text-align:center;font-size:12px;font-weight:600">${qty}</td>
+      <td style="padding:7px 10px;text-align:right;font-size:12px">${unitPrice.toFixed(3)}</td>
+      <td style="padding:7px 10px;text-align:center;font-size:12px;color:#000000">${disc > 0 ? disc + "%" : "—"}</td>
+      <td style="padding:7px 10px;text-align:right;font-size:12px;font-weight:600">${montantHT.toFixed(3)}</td>
     </tr>`;
   }).join("");
+
+  const emptyRowsCount = Math.max(0, MIN_ROWS - devis.lines.length);
+  const emptyRows = Array.from({ length: emptyRowsCount }).map((_, idx) => `
+    <tr style="height:28px;background:${(devis.lines.length + idx) % 2 === 0 ? "#fff" : "#f8fafc"}">
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>`).join("");
+
+  const rows = dataRows + emptyRows;
 
   const html = `<!doctype html>
 <html lang="fr">
@@ -144,12 +160,11 @@ function openDevisDocument(devis: Devis, settings: CompanySettings | null) {
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: Arial, sans-serif; font-size: 13px; color: #0f172a; background: #fff; }
-    @page { size: A4; margin: 18mm 15mm; }
+    @page { size: A4; margin: 12mm 14mm; }
     @media print { body { padding: 0; } }
     .page { max-width: 794px; margin: 0 auto; padding: 0; display:flex; flex-direction:column; min-height:255mm; }
     table { border-collapse: collapse; width: 100%; }
     th { font-weight: 600; border: 1px solid #000000; }
-    @media print { .page { min-height: 255mm; } }
   </style>
 </head>
 <body>
@@ -213,16 +228,15 @@ function openDevisDocument(devis: Devis, settings: CompanySettings | null) {
   </table>
 
   <!-- ═══ PRODUCT TABLE ═══ -->
-  <table style="margin-bottom:0;border:1px solid #000000;border-radius:6px;overflow:hidden">
+  <table style="margin-bottom:0;border:1px solid #000000;border-collapse:collapse">
     <thead>
       <tr style="background:#ffffff;color:#000000">
-        <th style="padding:9px 10px;text-align:center;font-size:11px;width:32px">N°</th>
-        <th style="padding:9px 10px;text-align:left;font-size:11px;width:70px">Réf.</th>
+        <th style="padding:9px 10px;text-align:left;font-size:11px;width:90px">Référence</th>
         <th style="padding:9px 10px;text-align:left;font-size:11px">Désignation</th>
         <th style="padding:9px 10px;text-align:center;font-size:11px;width:50px">Qté</th>
-        <th style="padding:9px 10px;text-align:right;font-size:11px;width:100px">P.U. HT (TND)</th>
+        <th style="padding:9px 10px;text-align:right;font-size:11px;width:90px">Prix HT (TND)</th>
         <th style="padding:9px 10px;text-align:center;font-size:11px;width:60px">Remise</th>
-        <th style="padding:9px 10px;text-align:right;font-size:11px;width:110px">Montant HT (TND)</th>
+        <th style="padding:9px 10px;text-align:right;font-size:11px;width:100px">Montant HT (TND)</th>
       </tr>
     </thead>
     <tbody>${rows}</tbody>

@@ -222,6 +222,7 @@ export interface CompanySettings {
   bank: string;
   agence: string;
   invoicePrefix?: string;
+  invoiceNextNumber?: number;
 }
 
 export interface SalesReportMonth {

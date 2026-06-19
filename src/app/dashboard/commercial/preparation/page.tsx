@@ -312,22 +312,22 @@ function buildBLHtml(order: SalesOrder): string {
   const MIN_ROWS = 10;
   const dataRows = processedLines.map(({ line, qty, unitPrice, disc, montantHT }, idx) => `
     <tr style="background:${idx % 2 === 0 ? "#fff" : "#f8fafc"}">
-      <td style="padding:7px 10px;font-size:11px;color:#000000;border:1px solid #000000">${(line.productId as any)?.sku || "—"}</td>
-      <td style="padding:7px 10px;font-size:12px;border:1px solid #000000">${(line.productId as any)?.name || "—"}</td>
-      <td style="padding:7px 10px;text-align:center;font-size:12px;font-weight:600;border:1px solid #000000">${qty}</td>
-      <td style="padding:7px 10px;text-align:right;font-size:12px;border:1px solid #000000">${unitPrice.toFixed(3)}</td>
-      <td style="padding:7px 10px;text-align:center;font-size:12px;color:#000000;border:1px solid #000000">${disc > 0 ? disc + "%" : "—"}</td>
+      <td style="padding:7px 10px;font-size:11px;color:#000000">${(line.productId as any)?.sku || "—"}</td>
+      <td style="padding:7px 10px;font-size:12px">${(line.productId as any)?.name || "—"}</td>
+      <td style="padding:7px 10px;text-align:center;font-size:12px;font-weight:600">${qty}</td>
+      <td style="padding:7px 10px;text-align:right;font-size:12px">${unitPrice.toFixed(3)}</td>
+      <td style="padding:7px 10px;text-align:center;font-size:12px;color:#000000">${disc > 0 ? disc + "%" : "—"}</td>
       <td style="padding:7px 10px;text-align:right;font-size:12px;font-weight:600">${montantHT.toFixed(3)}</td>
     </tr>`).join("");
 
   const emptyRowsCount = Math.max(0, MIN_ROWS - processedLines.length);
   const emptyRows = Array.from({ length: emptyRowsCount }).map((_, idx) => `
     <tr style="height:28px;background:${(processedLines.length + idx) % 2 === 0 ? "#fff" : "#f8fafc"}">
-      <td style="border:1px solid #000000"></td>
-      <td style="border:1px solid #000000"></td>
-      <td style="border:1px solid #000000"></td>
-      <td style="border:1px solid #000000"></td>
-      <td style="border:1px solid #000000"></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
       <td></td>
     </tr>`).join("");
 
@@ -400,15 +400,15 @@ function buildBLHtml(order: SalesOrder): string {
   </table>
 
   <!-- PRODUCT TABLE -->
-  <table style="border:1px solid #000000;border-radius:6px;overflow:hidden;margin-bottom:0">
+  <table style="border:1px solid #000000;margin-bottom:0;border-collapse:collapse">
     <thead>
       <tr style="background:#ffffff;color:#000000">
-        <th style="padding:9px 10px;text-align:left;font-size:11px;width:90px;border:1px solid #000000">Référence</th>
-        <th style="padding:9px 10px;text-align:left;font-size:11px;border:1px solid #000000">Désignation</th>
-        <th style="padding:9px 10px;text-align:center;font-size:11px;width:50px;border:1px solid #000000">Qté</th>
-        <th style="padding:9px 10px;text-align:right;font-size:11px;width:90px;border:1px solid #000000">Prix HT (TND)</th>
-        <th style="padding:9px 10px;text-align:center;font-size:11px;width:60px;border:1px solid #000000">Remise</th>
-        <th style="padding:9px 10px;text-align:right;font-size:11px;width:100px;border:1px solid #000000">Montant HT (TND)</th>
+        <th style="padding:9px 10px;text-align:left;font-size:11px;width:90px">Référence</th>
+        <th style="padding:9px 10px;text-align:left;font-size:11px">Désignation</th>
+        <th style="padding:9px 10px;text-align:center;font-size:11px;width:50px">Qté</th>
+        <th style="padding:9px 10px;text-align:right;font-size:11px;width:90px">Prix HT (TND)</th>
+        <th style="padding:9px 10px;text-align:center;font-size:11px;width:60px">Remise</th>
+        <th style="padding:9px 10px;text-align:right;font-size:11px;width:100px">Montant HT (TND)</th>
       </tr>
     </thead>
     <tbody>${rows}</tbody>

@@ -119,12 +119,12 @@ function openPreparationDocument(order: SalesOrder, settings: CompanySettings | 
     const lineHt = qty * (line.unitPrice || 0) * (1 - ((line.discount || 0) / 100));
     return `
     <tr style="background:${idx % 2 === 0 ? "#fff" : "#f8fafc"}">
-      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;color:#000000;font-size:12px">${idx + 1}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;font-size:11px;color:#000000">${line.productId?.sku || "—"}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;font-size:13px">${line.productId?.name || "—"}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;text-align:center;font-size:13px">${qty}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;text-align:right;font-size:13px">${(line.unitPrice || 0).toFixed(3)}</td>
-      <td style="border:1px solid #000000;padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${lineHt.toFixed(3)}</td>
+      <td style="padding:7px 10px;text-align:center;color:#000000;font-size:12px">${idx + 1}</td>
+      <td style="padding:7px 10px;font-size:11px;color:#000000">${line.productId?.sku || "—"}</td>
+      <td style="padding:7px 10px;font-size:13px">${line.productId?.name || "—"}</td>
+      <td style="padding:7px 10px;text-align:center;font-size:13px">${qty}</td>
+      <td style="padding:7px 10px;text-align:right;font-size:13px">${(line.unitPrice || 0).toFixed(3)}</td>
+      <td style="padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${lineHt.toFixed(3)}</td>
     </tr>`;
   }).join("");
 
@@ -200,7 +200,7 @@ function openPreparationDocument(order: SalesOrder, settings: CompanySettings | 
   </table>
 
   <!-- ═══ PRODUCT TABLE ═══ -->
-  <table style="margin-bottom:0;border:1px solid #000000;border-radius:6px;overflow:hidden">
+  <table style="margin-bottom:0;border:1px solid #000000;border-collapse:collapse">
     <thead>
       <tr style="background:#ffffff;color:#000000">
         <th style="padding:9px 10px;text-align:center;font-size:11px;width:32px">N°</th>
