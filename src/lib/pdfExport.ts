@@ -593,16 +593,20 @@ export function openFournisseurDocument(opts: FournisseurDocumentOptions): void 
         <td style="padding:6px 12px;text-align:right;font-size:12px;font-weight:600;color:#dc2626">${Math.max(0, opts.totalTtc - opts.amountPaid).toFixed(3)} TND</td>
       </tr>` : ""}`;
 
-  // Product table: single summary row when no line items
+  // Product table: single summary row when no line items, padded with filler rows
+  const MIN_ROWS = 10;
   const productRow = `
     <tr>
-      <td style="padding:7px 10px;text-align:center;color:#000000;font-size:12px">1</td>
-      <td style="padding:7px 10px;font-size:11px;color:#000000">${opts.supplierRef || opts.invoiceNo}</td>
-      <td style="padding:7px 10px;font-size:13px">Facture fournisseur — ${opts.supplierName}</td>
-      <td style="padding:7px 10px;text-align:center;font-size:13px">1</td>
-      <td style="padding:7px 10px;text-align:right;font-size:13px">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
-      <td style="padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
-    </tr>`;
+      <td style="padding:12px 10px;font-size:11px;color:#000000">${opts.supplierRef || opts.invoiceNo}</td>
+      <td style="padding:12px 10px;font-size:12px">Facture fournisseur — ${opts.supplierName}</td>
+      <td style="padding:12px 10px;text-align:center;font-size:12px;font-weight:600">1</td>
+      <td style="padding:12px 10px;text-align:right;font-size:12px">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
+      <td style="padding:12px 10px;text-align:center;font-size:12px;color:#000000">—</td>
+      <td style="padding:12px 10px;text-align:right;font-size:12px;font-weight:600">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
+    </tr>` + Array.from({ length: Math.max(0, MIN_ROWS - 1) }).map((_, idx) => `
+    <tr style="height:34px;background:${(1 + idx) % 2 === 0 ? "#fff" : "#f8fafc"}">
+      <td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>`).join("") + '<tr style="height:100%"><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
 
   const html = `<!doctype html>
 <html lang="fr">
@@ -617,6 +621,8 @@ export function openFournisseurDocument(opts: FournisseurDocumentOptions): void 
     .page { max-width: 794px; margin: 0 auto; padding: 0; display:flex; flex-direction:column; min-height:255mm; }
     table { border-collapse: collapse; width: 100%; }
     th { font-weight: 600; border: 1px solid #000000; }
+    .ptable { flex: 1 0 auto; }
+    .ptable td { border-left: 1px solid #000000; border-right: 1px solid #000000; }
     @media print { .page { min-height: 255mm; } }
   </style>
 </head>
@@ -640,10 +646,6 @@ export function openFournisseurDocument(opts: FournisseurDocumentOptions): void 
         <table style="margin-top:10px;margin-left:auto;width:auto">
           <tr>
             <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Date :</td>
-            <td style="font-size:11px;font-weight:600;padding:2px 0">${fmtDate(opts.invoiceDate)}</td>
-          </tr>
-          <tr>
-            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Échéance :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0">${fmtDate(opts.dueDate)}</td>
           </tr>
           <tr>
@@ -680,22 +682,22 @@ export function openFournisseurDocument(opts: FournisseurDocumentOptions): void 
   </table>
 
   <!-- PRODUCT TABLE -->
-  <table style="margin-bottom:0;border:1px solid #000000;border-collapse:collapse">
+  <table class="ptable" style="margin-bottom:0;border:1px solid #000000;border-collapse:collapse">
     <thead>
       <tr style="background:#ffffff;color:#000000">
-        <th style="padding:9px 10px;text-align:center;font-size:11px;width:32px">N°</th>
-        <th style="padding:9px 10px;text-align:left;font-size:11px;width:70px">Réf.</th>
+        <th style="padding:9px 10px;text-align:left;font-size:11px;width:90px">Référence</th>
         <th style="padding:9px 10px;text-align:left;font-size:11px">Désignation</th>
         <th style="padding:9px 10px;text-align:center;font-size:11px;width:50px">Qté</th>
-        <th style="padding:9px 10px;text-align:right;font-size:11px;width:110px">P.U. HT (TND)</th>
-        <th style="padding:9px 10px;text-align:right;font-size:11px;width:110px">Montant HT (TND)</th>
+        <th style="padding:9px 10px;text-align:right;font-size:11px;width:90px">Prix HT (TND)</th>
+        <th style="padding:9px 10px;text-align:center;font-size:11px;width:60px">Remise</th>
+        <th style="padding:9px 10px;text-align:right;font-size:11px;width:100px">Montant HT (TND)</th>
       </tr>
     </thead>
     <tbody>${productRow}</tbody>
   </table>
 
   <!-- BOTTOM ANCHOR -->
-  <div style="margin-top:auto">
+  <div>
 
   <!-- TAX SUMMARY -->
   <div style="display:flex;justify-content:flex-end;margin-top:16px;margin-bottom:16px">
@@ -805,24 +807,31 @@ export function openClientDocument(opts: ClientDocumentOptions): void {
   const origin = typeof window !== "undefined" ? window.location.origin : "";
 
   // Product rows
-  const productRows = opts.lines && opts.lines.length > 0
+  const MIN_ROWS = 10;
+  const dataRows = opts.lines && opts.lines.length > 0
     ? opts.lines.map((l, idx) => `
       <tr style="background:${idx % 2 === 0 ? "#fff" : "#f8fafc"}">
-        <td style="padding:7px 10px;text-align:center;color:#000000;font-size:12px">${idx + 1}</td>
-        <td style="padding:7px 10px;font-size:11px;color:#000000">${l.ref || "—"}</td>
-        <td style="padding:7px 10px;font-size:13px">${l.description}</td>
-        <td style="padding:7px 10px;text-align:center;font-size:13px">${l.qty}</td>
-        <td style="padding:7px 10px;text-align:right;font-size:13px">${l.unitPrice.toFixed(3)}</td>
-        <td style="padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${l.totalHt.toFixed(3)}</td>
+        <td style="padding:12px 10px;font-size:11px;color:#000000">${l.ref || "—"}</td>
+        <td style="padding:12px 10px;font-size:12px">${l.description}</td>
+        <td style="padding:12px 10px;text-align:center;font-size:12px;font-weight:600">${l.qty}</td>
+        <td style="padding:12px 10px;text-align:right;font-size:12px">${l.unitPrice.toFixed(3)}</td>
+        <td style="padding:12px 10px;text-align:center;font-size:12px;color:#000000">—</td>
+        <td style="padding:12px 10px;text-align:right;font-size:12px;font-weight:600">${l.totalHt.toFixed(3)}</td>
       </tr>`).join("")
     : `<tr>
-        <td style="padding:7px 10px;text-align:center;color:#000000;font-size:12px">1</td>
-        <td style="padding:7px 10px;font-size:11px;color:#000000">${opts.invoiceNo}</td>
-        <td style="padding:7px 10px;font-size:13px">Facture client — ${opts.customerName}</td>
-        <td style="padding:7px 10px;text-align:center;font-size:13px">1</td>
-        <td style="padding:7px 10px;text-align:right;font-size:13px">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
-        <td style="padding:7px 10px;text-align:right;font-size:13px;font-weight:600">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
+        <td style="padding:12px 10px;font-size:11px;color:#000000">${opts.invoiceNo}</td>
+        <td style="padding:12px 10px;font-size:12px">Facture client — ${opts.customerName}</td>
+        <td style="padding:12px 10px;text-align:center;font-size:12px;font-weight:600">1</td>
+        <td style="padding:12px 10px;text-align:right;font-size:12px">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
+        <td style="padding:12px 10px;text-align:center;font-size:12px;color:#000000">—</td>
+        <td style="padding:12px 10px;text-align:right;font-size:12px;font-weight:600">${hasBreakdown ? opts.subtotalHt!.toFixed(3) : opts.totalTtc.toFixed(3)}</td>
       </tr>`;
+  const lineCount = opts.lines && opts.lines.length > 0 ? opts.lines.length : 1;
+  const emptyRows = Array.from({ length: Math.max(0, MIN_ROWS - lineCount) }).map((_, idx) => `
+    <tr style="height:34px;background:${(lineCount + idx) % 2 === 0 ? "#fff" : "#f8fafc"}">
+      <td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>`).join("");
+  const productRows = dataRows + emptyRows + '<tr style="height:100%"><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
 
   const taxRows = hasBreakdown
     ? `
@@ -869,6 +878,8 @@ export function openClientDocument(opts: ClientDocumentOptions): void {
     .page { max-width: 794px; margin: 0 auto; padding: 0; display:flex; flex-direction:column; min-height:255mm; }
     table { border-collapse: collapse; width: 100%; }
     th { font-weight: 600; border: 1px solid #000000; }
+    .ptable { flex: 1 0 auto; }
+    .ptable td { border-left: 1px solid #000000; border-right: 1px solid #000000; }
     @media print { .page { min-height: 255mm; } }
   </style>
 </head>
@@ -891,10 +902,6 @@ export function openClientDocument(opts: ClientDocumentOptions): void {
         <table style="margin-top:10px;margin-left:auto;width:auto">
           <tr>
             <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Date :</td>
-            <td style="font-size:11px;font-weight:600;padding:2px 0">${fmtDate(opts.invoiceDate)}</td>
-          </tr>
-          <tr>
-            <td style="font-size:11px;color:#000000;padding:2px 8px 2px 0;text-align:right">Échéance :</td>
             <td style="font-size:11px;font-weight:600;padding:2px 0">${fmtDate(opts.dueDate)}</td>
           </tr>
           <tr>
@@ -937,22 +944,22 @@ export function openClientDocument(opts: ClientDocumentOptions): void {
   </table>
 
   <!-- PRODUCT TABLE -->
-  <table style="margin-bottom:0;border:1px solid #000000;border-collapse:collapse">
+  <table class="ptable" style="margin-bottom:0;border:1px solid #000000;border-collapse:collapse">
     <thead>
       <tr style="background:#ffffff;color:#000000">
-        <th style="padding:9px 10px;text-align:center;font-size:11px;width:32px">N°</th>
-        <th style="padding:9px 10px;text-align:left;font-size:11px;width:70px">Réf.</th>
+        <th style="padding:9px 10px;text-align:left;font-size:11px;width:90px">Référence</th>
         <th style="padding:9px 10px;text-align:left;font-size:11px">Désignation</th>
         <th style="padding:9px 10px;text-align:center;font-size:11px;width:50px">Qté</th>
-        <th style="padding:9px 10px;text-align:right;font-size:11px;width:110px">P.U. HT (TND)</th>
-        <th style="padding:9px 10px;text-align:right;font-size:11px;width:110px">Montant HT (TND)</th>
+        <th style="padding:9px 10px;text-align:right;font-size:11px;width:90px">Prix HT (TND)</th>
+        <th style="padding:9px 10px;text-align:center;font-size:11px;width:60px">Remise</th>
+        <th style="padding:9px 10px;text-align:right;font-size:11px;width:100px">Montant HT (TND)</th>
       </tr>
     </thead>
     <tbody>${productRows}</tbody>
   </table>
 
   <!-- BOTTOM ANCHOR -->
-  <div style="margin-top:auto">
+  <div>
 
   <!-- TAX SUMMARY -->
   <div style="display:flex;justify-content:flex-end;margin-top:16px;margin-bottom:16px">
@@ -1179,14 +1186,14 @@ export function openBonReceptionDocument(opts: BonReceptionDocumentOptions): voi
 
   const lineRows = (opts.lines ?? []).map((l, i) => `
     <tr style="background:${i % 2 === 0 ? "#ffffff" : "#f8fafc"}">
-      <td style="padding:7px 10px;text-align:center;color:#000000;font-size:12px">${i + 1}</td>
-      <td style="padding:7px 10px;font-size:11px;color:#000000">${l.sku || "—"}</td>
-      <td style="padding:7px 10px;font-size:13px">${l.name}</td>
-      <td style="padding:7px 10px;text-align:center;font-size:13px">${l.orderedQty}</td>
-      <td style="padding:7px 10px;text-align:center;font-size:13px">${l.receivedQty}</td>
-      <td style="padding:7px 10px;text-align:center;font-size:13px">${l.acceptedQty}</td>
-      <td style="padding:7px 10px;text-align:center;font-size:12px;color:${QUALITY_COLOR[l.qualityStatus] || "#64748b"};font-weight:600">${QUALITY_LABEL[l.qualityStatus] || l.qualityStatus}</td>
-      <td style="padding:7px 10px;font-size:11px;color:#000000">${l.lotRef || "—"}</td>
+      <td style="padding:12px 10px;text-align:center;color:#000000;font-size:12px">${i + 1}</td>
+      <td style="padding:12px 10px;font-size:11px;color:#000000">${l.sku || "—"}</td>
+      <td style="padding:12px 10px;font-size:13px">${l.name}</td>
+      <td style="padding:12px 10px;text-align:center;font-size:13px">${l.orderedQty}</td>
+      <td style="padding:12px 10px;text-align:center;font-size:13px">${l.receivedQty}</td>
+      <td style="padding:12px 10px;text-align:center;font-size:13px">${l.acceptedQty}</td>
+      <td style="padding:12px 10px;text-align:center;font-size:12px;color:${QUALITY_COLOR[l.qualityStatus] || "#64748b"};font-weight:600">${QUALITY_LABEL[l.qualityStatus] || l.qualityStatus}</td>
+      <td style="padding:12px 10px;font-size:11px;color:#000000">${l.lotRef || "—"}</td>
     </tr>`).join("");
 
   const html = `<!doctype html>

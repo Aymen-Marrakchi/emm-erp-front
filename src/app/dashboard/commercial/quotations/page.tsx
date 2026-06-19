@@ -130,18 +130,18 @@ function openDevisDocument(devis: Devis, settings: CompanySettings | null) {
     const montantHT = Number(line.subtotalHt || 0);
     return `
     <tr style="background:${idx % 2 === 0 ? "#fff" : "#f8fafc"}">
-      <td style="padding:7px 10px;font-size:11px;color:#000000">${line.productId?.sku || "—"}</td>
-      <td style="padding:7px 10px;font-size:12px">${line.productId?.name || "—"}</td>
-      <td style="padding:7px 10px;text-align:center;font-size:12px;font-weight:600">${qty}</td>
-      <td style="padding:7px 10px;text-align:right;font-size:12px">${unitPrice.toFixed(3)}</td>
-      <td style="padding:7px 10px;text-align:center;font-size:12px;color:#000000">${disc > 0 ? disc + "%" : "—"}</td>
-      <td style="padding:7px 10px;text-align:right;font-size:12px;font-weight:600">${montantHT.toFixed(3)}</td>
+      <td style="padding:12px 10px;font-size:11px;color:#000000">${line.productId?.sku || "—"}</td>
+      <td style="padding:12px 10px;font-size:12px">${line.productId?.name || "—"}</td>
+      <td style="padding:12px 10px;text-align:center;font-size:12px;font-weight:600">${qty}</td>
+      <td style="padding:12px 10px;text-align:right;font-size:12px">${unitPrice.toFixed(3)}</td>
+      <td style="padding:12px 10px;text-align:center;font-size:12px;color:#000000">${disc > 0 ? disc + "%" : "—"}</td>
+      <td style="padding:12px 10px;text-align:right;font-size:12px;font-weight:600">${montantHT.toFixed(3)}</td>
     </tr>`;
   }).join("");
 
   const emptyRowsCount = Math.max(0, MIN_ROWS - devis.lines.length);
   const emptyRows = Array.from({ length: emptyRowsCount }).map((_, idx) => `
-    <tr style="height:28px;background:${(devis.lines.length + idx) % 2 === 0 ? "#fff" : "#f8fafc"}">
+    <tr style="height:34px;background:${(devis.lines.length + idx) % 2 === 0 ? "#fff" : "#f8fafc"}">
       <td></td>
       <td></td>
       <td></td>
@@ -150,7 +150,7 @@ function openDevisDocument(devis: Devis, settings: CompanySettings | null) {
       <td></td>
     </tr>`).join("");
 
-  const rows = dataRows + emptyRows;
+  const rows = dataRows + emptyRows + '<tr style="height:100%"><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
 
   const html = `<!doctype html>
 <html lang="fr">
@@ -165,6 +165,8 @@ function openDevisDocument(devis: Devis, settings: CompanySettings | null) {
     .page { max-width: 794px; margin: 0 auto; padding: 0; display:flex; flex-direction:column; min-height:255mm; }
     table { border-collapse: collapse; width: 100%; }
     th { font-weight: 600; border: 1px solid #000000; }
+    .ptable { flex: 1 0 auto; }
+    .ptable td { border-left: 1px solid #000000; border-right: 1px solid #000000; }
   </style>
 </head>
 <body>
@@ -228,7 +230,7 @@ function openDevisDocument(devis: Devis, settings: CompanySettings | null) {
   </table>
 
   <!-- ═══ PRODUCT TABLE ═══ -->
-  <table style="margin-bottom:0;border:1px solid #000000;border-collapse:collapse">
+  <table class="ptable" style="margin-bottom:0;border:1px solid #000000;border-collapse:collapse">
     <thead>
       <tr style="background:#ffffff;color:#000000">
         <th style="padding:9px 10px;text-align:left;font-size:11px;width:90px">Référence</th>
@@ -243,38 +245,34 @@ function openDevisDocument(devis: Devis, settings: CompanySettings | null) {
   </table>
 
   <!-- ═══ BOTTOM ANCHOR ═══ -->
-  <div style="margin-top:auto">
+  <div>
 
   <!-- ═══ TAX SUMMARY ═══ -->
   <div style="display:flex;justify-content:flex-end;margin-top:16px;margin-bottom:16px">
-    <table style="width:280px;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 6px 6px;overflow:hidden">
+    <table style="width:260px;border:1px solid #e2e8f0;border-radius:6px;overflow:hidden;border-collapse:collapse">
       <tr style="background:#f8fafc">
-        <td style="padding:6px 12px;font-size:12px;color:#000000">Total brut HT</td>
-        <td style="padding:6px 12px;text-align:right;font-size:12px;font-weight:600">${totalBrutHt.toFixed(3)} TND</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000;border-bottom:1px solid #e2e8f0">Total HT</td>
+        <td style="padding:6px 12px;text-align:right;font-size:12px;font-weight:600;border-bottom:1px solid #e2e8f0">${totalBrutHt.toFixed(3)} TND</td>
       </tr>
       ${totalRemise > 0 ? `<tr>
-        <td style="padding:6px 12px;font-size:12px;color:#000000">Remise</td>
-        <td style="padding:6px 12px;text-align:right;font-size:12px;color:#000000">${totalRemise.toFixed(3)} TND</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000;border-bottom:1px solid #e2e8f0">Remise</td>
+        <td style="padding:6px 12px;text-align:right;font-size:12px;color:#000000;border-bottom:1px solid #e2e8f0">${totalRemise.toFixed(3)} TND</td>
       </tr>` : ""}
       <tr style="background:#f8fafc">
-        <td style="padding:6px 12px;font-size:12px;color:#0f172a;font-weight:600">Total Net HT</td>
-        <td style="padding:6px 12px;text-align:right;font-size:12px;font-weight:600">${devis.subtotalHt.toFixed(3)} TND</td>
+        <td style="padding:6px 12px;font-size:12px;font-weight:600;color:#0f172a;border-bottom:1px solid #e2e8f0">Total Net HT</td>
+        <td style="padding:6px 12px;text-align:right;font-size:12px;font-weight:600;border-bottom:1px solid #e2e8f0">${devis.subtotalHt.toFixed(3)} TND</td>
       </tr>
       ${fodecRate > 0 ? `<tr>
-        <td style="padding:6px 12px;font-size:12px;color:#000000">FODEC (${fodecRate}%)</td>
-        <td style="padding:6px 12px;text-align:right;font-size:12px">${devis.totalFodec.toFixed(3)} TND</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000;border-bottom:1px solid #e2e8f0">FODEC (${fodecRate}%)</td>
+        <td style="padding:6px 12px;text-align:right;font-size:12px;border-bottom:1px solid #e2e8f0">${devis.totalFodec.toFixed(3)} TND</td>
       </tr>` : ""}
       ${tvaRate > 0 ? `<tr>
-        <td style="padding:6px 12px;font-size:12px;color:#000000">TVA (${tvaRate}%)</td>
-        <td style="padding:6px 12px;text-align:right;font-size:12px">${devis.totalVat.toFixed(3)} TND</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000;border-bottom:1px solid #e2e8f0">TVA (${tvaRate}%)</td>
+        <td style="padding:6px 12px;text-align:right;font-size:12px;border-bottom:1px solid #e2e8f0">${devis.totalVat.toFixed(3)} TND</td>
       </tr>` : ""}
-      <tr style="background:#f8fafc">
-        <td style="padding:6px 12px;font-size:12px;color:#000000">Avant timbre</td>
-        <td style="padding:6px 12px;text-align:right;font-size:12px">${devis.totalBeforeStamp.toFixed(3)} TND</td>
-      </tr>
       <tr>
-        <td style="padding:6px 12px;font-size:12px;color:#000000">Timbre fiscal</td>
-        <td style="padding:6px 12px;text-align:right;font-size:12px">${devis.timbreFiscal.toFixed(3)} TND</td>
+        <td style="padding:6px 12px;font-size:12px;color:#000000;border-bottom:1px solid #e2e8f0">Timbre fiscal</td>
+        <td style="padding:6px 12px;text-align:right;font-size:12px;border-bottom:1px solid #e2e8f0">${devis.timbreFiscal.toFixed(3)} TND</td>
       </tr>
       <tr style="background:#ffffff;border-top:2px solid #000000">
         <td style="padding:9px 12px;font-size:13px;font-weight:700;color:#000000">TOTAL TTC</td>
@@ -284,7 +282,7 @@ function openDevisDocument(devis: Devis, settings: CompanySettings | null) {
   </div>
 
   <!-- ═══ MONTANT EN LETTRES ═══ -->
-  <div style="border:1px solid #e2e8f0;border-radius:6px;padding:10px 14px;margin-bottom:16px;background:#f8fafc">
+  <div style="border:1px solid #e2e8f0;border-radius:6px;padding:10px 14px;margin-bottom:12px;background:#f8fafc">
     <span style="font-size:11px;color:#000000">Arrêté le présent devis à la somme de : </span>
     <strong style="font-size:12px">${montantEnLettres(devis.totalTtc)}</strong>
   </div>
@@ -298,15 +296,7 @@ function openDevisDocument(devis: Devis, settings: CompanySettings | null) {
   </div>
 
   <!-- ═══ FOOTER ═══ -->
-  <div style="border-top:1px solid #e2e8f0;padding-top:12px">
-    <div style="font-size:10px;color:#000000">
-      <strong style="color:#0f172a">Conditions de validité :</strong> Ce devis est valable jusqu'au ${dueDate}.<br/>
-      Toute commande passée après cette date devra faire l'objet d'un nouveau devis.<br/>
-      En cas de litige, compétence exclusive du Tribunal de Commerce de Tunis.
-    </div>
-  </div>
-
-  <div style="margin-top:14px;text-align:center;font-size:9px;color:#000000;border-top:1px solid #f1f5f9;padding-top:10px">
+  <div style="margin-top:20px;border-top:1px solid #e2e8f0;padding-top:10px;text-align:center;font-size:9px;color:#000000">
     ${companyName}${companyMf ? " · MF : " + companyMf : ""}${companyRne ? " · RNE : " + companyRne : ""} · ${companyAddress} · ${companyPhone} · ${companyEmail}
   </div>
 

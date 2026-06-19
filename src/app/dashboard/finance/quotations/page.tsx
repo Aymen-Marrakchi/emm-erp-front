@@ -110,17 +110,17 @@ function openQuotationDocument(devis: Devis, settings: CompanySettings | null, s
   const MIN_ROWS = 10;
   const dataRows = processedLines.map(({ line, qty, unitPrice, disc, montantHT }, idx) => `
     <tr style="background:${idx % 2 === 0 ? "#fff" : "#f8fafc"}">
-      <td style="padding:7px 10px;font-size:11px;color:#000000">${line.productId?.sku || "—"}</td>
-      <td style="padding:7px 10px;font-size:12px">${line.productId?.name || "—"}</td>
-      <td style="padding:7px 10px;text-align:center;font-size:12px;font-weight:600">${qty}</td>
-      <td style="padding:7px 10px;text-align:right;font-size:12px">${unitPrice.toFixed(3)}</td>
-      <td style="padding:7px 10px;text-align:center;font-size:12px;color:#000000">${disc > 0 ? disc + "%" : "—"}</td>
-      <td style="padding:7px 10px;text-align:right;font-size:12px;font-weight:600">${montantHT.toFixed(3)}</td>
+      <td style="padding:12px 10px;font-size:11px;color:#000000">${line.productId?.sku || "—"}</td>
+      <td style="padding:12px 10px;font-size:12px">${line.productId?.name || "—"}</td>
+      <td style="padding:12px 10px;text-align:center;font-size:12px;font-weight:600">${qty}</td>
+      <td style="padding:12px 10px;text-align:right;font-size:12px">${unitPrice.toFixed(3)}</td>
+      <td style="padding:12px 10px;text-align:center;font-size:12px;color:#000000">${disc > 0 ? disc + "%" : "—"}</td>
+      <td style="padding:12px 10px;text-align:right;font-size:12px;font-weight:600">${montantHT.toFixed(3)}</td>
     </tr>`).join("");
 
   const emptyRowsCount = Math.max(0, MIN_ROWS - processedLines.length);
   const emptyRows = Array.from({ length: emptyRowsCount }).map((_, idx) => `
-    <tr style="height:28px;background:${(processedLines.length + idx) % 2 === 0 ? "#fff" : "#f8fafc"}">
+    <tr style="height:34px;background:${(processedLines.length + idx) % 2 === 0 ? "#fff" : "#f8fafc"}">
       <td></td>
       <td></td>
       <td></td>
@@ -129,7 +129,7 @@ function openQuotationDocument(devis: Devis, settings: CompanySettings | null, s
       <td></td>
     </tr>`).join("");
 
-  const rows = dataRows + emptyRows;
+  const rows = dataRows + emptyRows + '<tr style="height:100%"><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
 
   const html = `<!doctype html>
 <html lang="fr">
@@ -144,6 +144,8 @@ function openQuotationDocument(devis: Devis, settings: CompanySettings | null, s
     .page { max-width: 794px; margin: 0 auto; padding: 0; display:flex; flex-direction:column; min-height:255mm; }
     table { border-collapse: collapse; width: 100%; }
     th { font-weight: 600; border: 1px solid #000000; }
+    .ptable { flex: 1 0 auto; }
+    .ptable td { border-left: 1px solid #000000; border-right: 1px solid #000000; }
   </style>
 </head>
 <body>
@@ -207,7 +209,7 @@ function openQuotationDocument(devis: Devis, settings: CompanySettings | null, s
   </table>
 
   <!-- PRODUCT TABLE -->
-  <table style="border:1px solid #000000;margin-bottom:0;border-collapse:collapse">
+  <table class="ptable" style="border:1px solid #000000;margin-bottom:0;border-collapse:collapse">
     <thead>
       <tr style="background:#ffffff;color:#000000">
         <th style="padding:9px 10px;text-align:left;font-size:11px;width:90px">Référence</th>
@@ -222,7 +224,7 @@ function openQuotationDocument(devis: Devis, settings: CompanySettings | null, s
   </table>
 
   <!-- BOTTOM ANCHOR -->
-  <div style="margin-top:auto">
+  <div>
 
   <!-- TOTALS -->
   <div style="display:flex;justify-content:flex-end;margin-top:16px;margin-bottom:16px">
